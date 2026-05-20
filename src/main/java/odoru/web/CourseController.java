@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/courses")
+@RequestMapping("/api/cours")
 public class CourseController {
 
     @Autowired
@@ -17,8 +17,8 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<Course> createCourse(@RequestBody Course course,
-                                               @RequestParam String teacherId) {
-        return ResponseEntity.ok(courseService.createCourse(course, teacherId));
+                                               @RequestParam String enseignantId) {
+        return ResponseEntity.ok(courseService.createCourse(course, enseignantId));
     }
 
     @GetMapping
@@ -26,18 +26,18 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getAllCourses());
     }
 
-    @GetMapping("/level/{level}")
-    public ResponseEntity<List<Course>> getCoursesByLevel(@PathVariable int level) {
-        return ResponseEntity.ok(courseService.getCoursesByLevel(level));
+    @GetMapping("/niveau/{niveau}")
+    public ResponseEntity<List<Course>> getCoursesByNiveau(@PathVariable int niveau) {
+        return ResponseEntity.ok(courseService.getCoursesByNiveau(niveau));
     }
 
-    @GetMapping("/teacher/{teacherId}")
-    public ResponseEntity<List<Course>> getCoursesByTeacher(@PathVariable String teacherId) {
-        return ResponseEntity.ok(courseService.getCoursesByTeacher(teacherId));
+    @GetMapping("/enseignant/{enseignantId}")
+    public ResponseEntity<List<Course>> getCoursesByEnseignant(@PathVariable String enseignantId) {
+        return ResponseEntity.ok(courseService.getCoursesByEnseignant(enseignantId));
     }
 
-    @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<Course>> getCoursesByMember(@PathVariable String memberId) {
-        return ResponseEntity.ok(courseService.getCoursesByMember(memberId));
+    @GetMapping("/membre/{membreId}")
+    public ResponseEntity<List<Course>> getCoursesByMembre(@PathVariable String membreId) {
+        return ResponseEntity.ok(courseService.getCoursesByMembre(membreId));
     }
 }

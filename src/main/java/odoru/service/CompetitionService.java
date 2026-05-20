@@ -19,38 +19,37 @@ public class CompetitionService {
     @Autowired
     private UserRepository userRepository;
 
-    public Competition createCompetition(Competition competition, String teacherId) {
-        if (competition.getDateTime().isBefore(LocalDateTime.now().plusDays(7))) {
+    public Competition createCompetition(Competition competition, String enseignantId) {
+        if (competition.getDateHeure().isBefore(LocalDateTime.now().plusDays(7))) {
             throw new RuntimeException("La date doit être au moins 7 jours après aujourd'hui");
         }
 
-        User teacher = userRepository.findById(teacherId)
+        User enseignant = userRepository.findById(enseignantId)
                 .orElseThrow(() -> new RuntimeException("Enseignant introuvable"));
 
-        if (!teacher.getRoles().contains(User.Role.TEACHER)) {
+        if (!enseignant.getRoles().contains(User.Role.TEACHER)) {
             throw new RuntimeException("Cet utilisateur n'est pas enseignant");
         }
 
-        if (teacher.getExpertiseLevel() < competition.getTargetLevel()) {
-            throw new RuntimeException("L'enseignant n'est pas apte au niveau " + competition.getTargetLevel());
+        if (enseignant.getNiveauExpertise() < competition.getNiveauCible()) {
+            throw new RuntimeException("L'enseignant n'est pas apte au niveau " + competition.getNiveauCible());
         }
 
-        competition.setTeacherId(teacherId);
+        competition.setEnseignantId(enseignantId);
         return competitionRepository.save(competition);
     }
 
-    public Competition addResult(String competitionId, String memberId, double score) {
-        if (score < 0 || score > 10) {
+    public Competition addResultat(String competitionId, String membreId, double note) {
+        if (note < 0 || note > 10) {
             throw new RuntimeException("La note doit être entre 0 et 10");
         }
 
-        // Arrondi au 1/10e
-        double rounded = Math.round(score * 10.0) / 10.0;
+        double noteArrondie = Math.round(note * 10.0) / 10.0;
 
         Competition competition = competitionRepository.findById(competitionId)
                 .orElseThrow(() -> new RuntimeException("Compétition introuvable"));
 
-        competition.getResults().put(memberId, rounded);
+        competition.getResultats().put(membreId, noteArrondie);
         return competitionRepository.save(competition);
     }
 
@@ -58,13 +57,13 @@ public class CompetitionService {
         return competitionRepository.findAll();
     }
 
-    public List<Competition> getCompetitionsByLevel(int level) {
-        return competitionRepository.findByTargetLevel(level);
+    public List<Competition> getCompetitionsByNiveau(int niveau) {
+        return competitionRepository.findByNiveauCible(niveau);
     }
 
-    public List<Competition> getCompetitionsByMember(String memberId) {
+    public List<Competition> getCompetitionsByMembre(String membreId) {
         return competitionRepository.findAll().stream()
-                .filter(c -> c.getResults().containsKey(memberId))
+                .filter(c -> c.getResultats().containsKey(membreId))
                 .toList();
     }
 }

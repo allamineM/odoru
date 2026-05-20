@@ -17,15 +17,15 @@ public class CompetitionController {
 
     @PostMapping
     public ResponseEntity<Competition> createCompetition(@RequestBody Competition competition,
-                                                         @RequestParam String teacherId) {
-        return ResponseEntity.ok(competitionService.createCompetition(competition, teacherId));
+                                                         @RequestParam String enseignantId) {
+        return ResponseEntity.ok(competitionService.createCompetition(competition, enseignantId));
     }
 
-    @PutMapping("/{id}/result")
-    public ResponseEntity<Competition> addResult(@PathVariable String id,
-                                                 @RequestParam String memberId,
-                                                 @RequestParam double score) {
-        return ResponseEntity.ok(competitionService.addResult(id, memberId, score));
+    @PutMapping("/{id}/resultat")
+    public ResponseEntity<Competition> addResultat(@PathVariable String id,
+                                                   @RequestParam String membreId,
+                                                   @RequestParam double note) {
+        return ResponseEntity.ok(competitionService.addResultat(id, membreId, note));
     }
 
     @GetMapping
@@ -33,13 +33,13 @@ public class CompetitionController {
         return ResponseEntity.ok(competitionService.getAllCompetitions());
     }
 
-    @GetMapping("/level/{level}")
-    public ResponseEntity<List<Competition>> getByLevel(@PathVariable int level) {
-        return ResponseEntity.ok(competitionService.getCompetitionsByLevel(level));
+    @GetMapping("/niveau/{niveau}")
+    public ResponseEntity<List<Competition>> getByNiveau(@PathVariable int niveau) {
+        return ResponseEntity.ok(competitionService.getCompetitionsByNiveau(niveau));
     }
 
-    @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<Competition>> getByMember(@PathVariable String memberId) {
-        return ResponseEntity.ok(competitionService.getCompetitionsByMember(memberId));
+    @GetMapping("/membre/{membreId}")
+    public ResponseEntity<List<Competition>> getByMembre(@PathVariable String membreId) {
+        return ResponseEntity.ok(competitionService.getCompetitionsByMembre(membreId));
     }
 }

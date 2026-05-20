@@ -23,52 +23,47 @@ public class BadgeService {
     @Autowired
     private CourseRepository courseRepository;
 
-    // Secrétaire associe un badge à un membre
-    public Badge assignBadge(String badgeNumber, String memberId) {
-        if (badgeRepository.existsByBadgeNumber(badgeNumber)) {
+    public Badge assignerBadge(String numeroBadge, String membreId) {
+        if (badgeRepository.existsByNumeroBadge(numeroBadge)) {
             throw new RuntimeException("Ce badge est déjà associé à un membre");
         }
         Badge badge = new Badge();
-        badge.setBadgeNumber(badgeNumber);
-        badge.setMemberId(memberId);
+        badge.setNumeroBadge(numeroBadge);
+        badge.setMembreId(membreId);
         return badgeRepository.save(badge);
     }
 
-    // Secrétaire dissocie un badge
-    public void removeBadge(String badgeNumber) {
-        Badge badge = badgeRepository.findByBadgeNumber(badgeNumber)
+    public void retirerBadge(String numeroBadge) {
+        Badge badge = badgeRepository.findByNumeroBadge(numeroBadge)
                 .orElseThrow(() -> new RuntimeException("Badge introuvable"));
         badgeRepository.delete(badge);
     }
 
-    // Simulation du boîtier : badge scanné lors d'un cours
-    public Attendance scan(String badgeNumber, String courseId) {
-        Badge badge = badgeRepository.findByBadgeNumber(badgeNumber)
+    public Attendance scanner(String numeroBadge, String coursId) {
+        Badge badge = badgeRepository.findByNumeroBadge(numeroBadge)
                 .orElseThrow(() -> new RuntimeException("Badge inconnu"));
 
-        courseRepository.findById(courseId)
+        courseRepository.findById(coursId)
                 .orElseThrow(() -> new RuntimeException("Cours introuvable"));
 
-        if (attendanceRepository.existsByMemberIdAndCourseId(badge.getMemberId(), courseId)) {
+        if (attendanceRepository.existsByMembreIdAndCoursId(badge.getMembreId(), coursId)) {
             throw new RuntimeException("Présence déjà enregistrée");
         }
 
-        Attendance attendance = new Attendance();
-        attendance.setMemberId(badge.getMemberId());
-        attendance.setCourseId(courseId);
-        return attendanceRepository.save(attendance);
+        Attendance presence = new Attendance();
+        presence.setMembreId(badge.getMembreId());
+        presence.setCoursId(coursId);
+        return attendanceRepository.save(presence);
     }
 
-    // Cours suivis par un membre
-    public List<Course> getAttendedCourses(String memberId) {
-        return attendanceRepository.findByMemberId(memberId).stream()
-                .map(a -> courseRepository.findById(a.getCourseId()).orElse(null))
+    public List<Course> getCourseSuivisParMembre(String membreId) {
+        return attendanceRepository.findByMembreId(membreId).stream()
+                .map(a -> courseRepository.findById(a.getCoursId()).orElse(null))
                 .filter(c -> c != null)
                 .toList();
     }
 
-    // Liste des membres présents à un cours
-    public List<Attendance> getAttendancesByCourse(String courseId) {
-        return attendanceRepository.findByCourseId(courseId);
+    public List<Attendance> getPresencesParCours(String coursId) {
+        return attendanceRepository.findByCoursId(coursId);
     }
 }

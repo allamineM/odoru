@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface AttendanceRepository extends MongoRepository<Attendance, String> {
 
-    List<Attendance> findByMemberId(String memberId);
-    List<Attendance> findByCourseId(String courseId);
-    boolean existsByMemberIdAndCourseId(String memberId, String courseId);
+    List<Attendance> findByMembreId(String membreId);
+    List<Attendance> findByCoursId(String coursId);
+    boolean existsByMembreIdAndCoursId(String membreId, String coursId);
 }

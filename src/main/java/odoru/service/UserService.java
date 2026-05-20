@@ -15,7 +15,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public User inscription(User user) {
-        if (userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByNomUtilisateur(user.getNomUtilisateur())) {
             throw new RuntimeException("Ce nom d'utilisateur est déjà pris");
         }
         if (userRepository.existsByEmail(user.getEmail())) {
@@ -33,10 +33,10 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User updateExpertiseLevel(String id, int level) {
+    public User updateNiveauExpertise(String id, int niveau) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Membre introuvable"));
-        user.setExpertiseLevel(level);
+        user.setNiveauExpertise(niveau);
         return userRepository.save(user);
     }
 

@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface BadgeRepository extends MongoRepository<Badge, String> {
 
-    Optional<Badge> findByBadgeNumber(String badgeNumber);
-    Optional<Badge> findByMemberId(String memberId);
-    boolean existsByBadgeNumber(String badgeNumber);
+    Optional<Badge> findByNumeroBadge(String numeroBadge);
+    Optional<Badge> findByMembreId(String membreId);
+    boolean existsByNumeroBadge(String numeroBadge);
 }

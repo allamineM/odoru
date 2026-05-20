@@ -34,8 +34,8 @@ public class UserController {
 
     @PutMapping("/{id}/expertise")
     public ResponseEntity<User> updateExpertise(@PathVariable String id,
-                                                @RequestParam int level) {
-        return ResponseEntity.ok(userService.updateExpertiseLevel(id, level));
+                                                @RequestParam int niveau) {
+        return ResponseEntity.ok(userService.updateNiveauExpertise(id, niveau));
     }
 
     @PutMapping("/{id}/role")

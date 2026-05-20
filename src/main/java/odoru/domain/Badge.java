@@ -9,16 +9,16 @@ public class Badge {
     @Id
     private String id;
 
-    private String badgeNumber;
-    private String memberId;
+    private String numeroBadge;
+    private String membreId;
 
     public Badge() {}
 
     public String getId() { return id; }
 
-    public String getBadgeNumber() { return badgeNumber; }
-    public void setBadgeNumber(String badgeNumber) { this.badgeNumber = badgeNumber; }
+    public String getNumeroBadge() { return numeroBadge; }
+    public void setNumeroBadge(String numeroBadge) { this.numeroBadge = numeroBadge; }
 
-    public String getMemberId() { return memberId; }
-    public void setMemberId(String memberId) { this.memberId = memberId; }
+    public String getMembreId() { return membreId; }
+    public void setMembreId(String membreId) { this.membreId = membreId; }
 }

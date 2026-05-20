@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface CompetitionRepository extends MongoRepository<Competition, String> {
 
-    List<Competition> findByTargetLevel(int targetLevel);
-    List<Competition> findByTeacherId(String teacherId);
+    List<Competition> findByNiveauCible(int niveauCible);
+    List<Competition> findByEnseignantId(String enseignantId);
 }

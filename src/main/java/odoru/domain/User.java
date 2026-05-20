@@ -13,18 +13,18 @@ public class User {
     @Id
     private String id;
 
-    private String lastName;
-    private String firstName;
+    private String nom;
+    private String prenom;
 
     @Indexed(unique = true)
     private String email;
 
     @Indexed(unique = true)
-    private String username;
+    private String nomUtilisateur;
 
-    private String password;
-    private Address address;
-    private int expertiseLevel; // 1 à 5
+    private String motDePasse;
+    private Address adresse;
+    private int niveauExpertise; // 1 à 5
     private Set<Role> roles = new HashSet<>();
 
     public enum Role {
@@ -35,26 +35,26 @@ public class User {
 
     public String getId() { return id; }
 
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
 
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getPrenom() { return prenom; }
+    public void setPrenom(String prenom) { this.prenom = prenom; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public String getNomUtilisateur() { return nomUtilisateur; }
+    public void setNomUtilisateur(String nomUtilisateur) { this.nomUtilisateur = nomUtilisateur; }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getMotDePasse() { return motDePasse; }
+    public void setMotDePasse(String motDePasse) { this.motDePasse = motDePasse; }
 
-    public Address getAddress() { return address; }
-    public void setAddress(Address address) { this.address = address; }
+    public Address getAdresse() { return adresse; }
+    public void setAdresse(Address adresse) { this.adresse = adresse; }
 
-    public int getExpertiseLevel() { return expertiseLevel; }
-    public void setExpertiseLevel(int expertiseLevel) { this.expertiseLevel = expertiseLevel; }
+    public int getNiveauExpertise() { return niveauExpertise; }
+    public void setNiveauExpertise(int niveauExpertise) { this.niveauExpertise = niveauExpertise; }
 
     public Set<Role> getRoles() { return roles; }
     public void setRoles(Set<Role> roles) { this.roles = roles; }

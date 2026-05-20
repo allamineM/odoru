@@ -11,21 +11,21 @@ public class Attendance {
     @Id
     private String id;
 
-    private String memberId;
-    private String courseId;
-    private LocalDateTime scannedAt;
+    private String membreId;
+    private String coursId;
+    private LocalDateTime scanneLe;
 
     public Attendance() {
-        this.scannedAt = LocalDateTime.now();
+        this.scanneLe = LocalDateTime.now();
     }
 
     public String getId() { return id; }
 
-    public String getMemberId() { return memberId; }
-    public void setMemberId(String memberId) { this.memberId = memberId; }
+    public String getMembreId() { return membreId; }
+    public void setMembreId(String membreId) { this.membreId = membreId; }
 
-    public String getCourseId() { return courseId; }
-    public void setCourseId(String courseId) { this.courseId = courseId; }
+    public String getCoursId() { return coursId; }
+    public void setCoursId(String coursId) { this.coursId = coursId; }
 
-    public LocalDateTime getScannedAt() { return scannedAt; }
+    public LocalDateTime getScanneLe() { return scanneLe; }
 }

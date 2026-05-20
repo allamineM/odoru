@@ -17,36 +17,31 @@ public class BadgeController {
     @Autowired
     private BadgeService badgeService;
 
-    // Secrétaire associe un badge
-    @PostMapping("/assign")
-    public ResponseEntity<Badge> assignBadge(@RequestParam String badgeNumber,
-                                             @RequestParam String memberId) {
-        return ResponseEntity.ok(badgeService.assignBadge(badgeNumber, memberId));
+    @PostMapping("/assigner")
+    public ResponseEntity<Badge> assignerBadge(@RequestParam String numeroBadge,
+                                               @RequestParam String membreId) {
+        return ResponseEntity.ok(badgeService.assignerBadge(numeroBadge, membreId));
     }
 
-    // Secrétaire dissocie un badge
-    @DeleteMapping("/{badgeNumber}")
-    public ResponseEntity<Void> removeBadge(@PathVariable String badgeNumber) {
-        badgeService.removeBadge(badgeNumber);
+    @DeleteMapping("/{numeroBadge}")
+    public ResponseEntity<Void> retirerBadge(@PathVariable String numeroBadge) {
+        badgeService.retirerBadge(numeroBadge);
         return ResponseEntity.noContent().build();
     }
 
-    // Simulation boîtier : scan du badge lors d'un cours
-    @PostMapping("/scan")
-    public ResponseEntity<Attendance> scan(@RequestParam String badgeNumber,
-                                           @RequestParam String courseId) {
-        return ResponseEntity.ok(badgeService.scan(badgeNumber, courseId));
+    @PostMapping("/scanner")
+    public ResponseEntity<Attendance> scanner(@RequestParam String numeroBadge,
+                                              @RequestParam String coursId) {
+        return ResponseEntity.ok(badgeService.scanner(numeroBadge, coursId));
     }
 
-    // Cours suivis par un membre
-    @GetMapping("/member/{memberId}/courses")
-    public ResponseEntity<List<Course>> getAttendedCourses(@PathVariable String memberId) {
-        return ResponseEntity.ok(badgeService.getAttendedCourses(memberId));
+    @GetMapping("/membre/{membreId}/cours")
+    public ResponseEntity<List<Course>> getCourseSuivis(@PathVariable String membreId) {
+        return ResponseEntity.ok(badgeService.getCourseSuivisParMembre(membreId));
     }
 
-    // Présences à un cours
-    @GetMapping("/course/{courseId}/attendances")
-    public ResponseEntity<List<Attendance>> getAttendancesByCourse(@PathVariable String courseId) {
-        return ResponseEntity.ok(badgeService.getAttendancesByCourse(courseId));
+    @GetMapping("/cours/{coursId}/presences")
+    public ResponseEntity<List<Attendance>> getPresences(@PathVariable String coursId) {
+        return ResponseEntity.ok(badgeService.getPresencesParCours(coursId));
     }
 }

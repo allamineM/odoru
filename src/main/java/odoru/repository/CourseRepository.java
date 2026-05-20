@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface CourseRepository extends MongoRepository<Course, String> {
 
-    List<Course> findByTargetLevel(int targetLevel);
-    List<Course> findByTeacherId(String teacherId);
+    List<Course> findByNiveauCible(int niveauCible);
+    List<Course> findByEnseignantId(String enseignantId);
 }

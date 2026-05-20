@@ -13,43 +13,43 @@ public class Competition {
     @Id
     private String id;
 
-    private String title;
-    private int targetLevel;
-    private LocalDateTime dateTime;
-    private String teacherId;
-    private String location;
-    private int durationMinutes;
-    private LocalDateTime createdAt;
+    private String titre;
+    private int niveauCible;
+    private LocalDateTime dateHeure;
+    private String enseignantId;
+    private String lieu;
+    private int dureeMinutes;
+    private LocalDateTime creeLe;
 
-    // memberId -> note sur 10 (précision 1/10)
-    private Map<String, Double> results = new HashMap<>();
+    // membreId -> note sur 10 (précision 1/10)
+    private Map<String, Double> resultats = new HashMap<>();
 
     public Competition() {
-        this.createdAt = LocalDateTime.now();
+        this.creeLe = LocalDateTime.now();
     }
 
     public String getId() { return id; }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public String getTitre() { return titre; }
+    public void setTitre(String titre) { this.titre = titre; }
 
-    public int getTargetLevel() { return targetLevel; }
-    public void setTargetLevel(int targetLevel) { this.targetLevel = targetLevel; }
+    public int getNiveauCible() { return niveauCible; }
+    public void setNiveauCible(int niveauCible) { this.niveauCible = niveauCible; }
 
-    public LocalDateTime getDateTime() { return dateTime; }
-    public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
+    public LocalDateTime getDateHeure() { return dateHeure; }
+    public void setDateHeure(LocalDateTime dateHeure) { this.dateHeure = dateHeure; }
 
-    public String getTeacherId() { return teacherId; }
-    public void setTeacherId(String teacherId) { this.teacherId = teacherId; }
+    public String getEnseignantId() { return enseignantId; }
+    public void setEnseignantId(String enseignantId) { this.enseignantId = enseignantId; }
 
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    public String getLieu() { return lieu; }
+    public void setLieu(String lieu) { this.lieu = lieu; }
 
-    public int getDurationMinutes() { return durationMinutes; }
-    public void setDurationMinutes(int durationMinutes) { this.durationMinutes = durationMinutes; }
+    public int getDureeMinutes() { return dureeMinutes; }
+    public void setDureeMinutes(int dureeMinutes) { this.dureeMinutes = dureeMinutes; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getCreeLe() { return creeLe; }
 
-    public Map<String, Double> getResults() { return results; }
-    public void setResults(Map<String, Double> results) { this.results = results; }
+    public Map<String, Double> getResultats() { return resultats; }
+    public void setResultats(Map<String, Double> resultats) { this.resultats = resultats; }
 }

@@ -19,25 +19,23 @@ public class CourseService {
     @Autowired
     private UserRepository userRepository;
 
-    public Course createCourse(Course course, String teacherId) {
-        // Règle : la date doit être supérieure de 7 jours
-        if (course.getDateTime().isBefore(LocalDateTime.now().plusDays(7))) {
+    public Course createCourse(Course course, String enseignantId) {
+        if (course.getDateHeure().isBefore(LocalDateTime.now().plusDays(7))) {
             throw new RuntimeException("La date du cours doit être au moins 7 jours après aujourd'hui");
         }
 
-        // Règle : l'enseignant doit être apte au niveau du cours
-        User teacher = userRepository.findById(teacherId)
+        User enseignant = userRepository.findById(enseignantId)
                 .orElseThrow(() -> new RuntimeException("Enseignant introuvable"));
 
-        if (!teacher.getRoles().contains(User.Role.TEACHER)) {
+        if (!enseignant.getRoles().contains(User.Role.TEACHER)) {
             throw new RuntimeException("Cet utilisateur n'est pas enseignant");
         }
 
-        if (teacher.getExpertiseLevel() < course.getTargetLevel()) {
-            throw new RuntimeException("L'enseignant n'est pas apte au niveau " + course.getTargetLevel());
+        if (enseignant.getNiveauExpertise() < course.getNiveauCible()) {
+            throw new RuntimeException("L'enseignant n'est pas apte au niveau " + course.getNiveauCible());
         }
 
-        course.setTeacherId(teacherId);
+        course.setEnseignantId(enseignantId);
         return courseRepository.save(course);
     }
 
@@ -45,18 +43,17 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
-    public List<Course> getCoursesByLevel(int level) {
-        return courseRepository.findByTargetLevel(level);
+    public List<Course> getCoursesByNiveau(int niveau) {
+        return courseRepository.findByNiveauCible(niveau);
     }
 
-    public List<Course> getCoursesByTeacher(String teacherId) {
-        return courseRepository.findByTeacherId(teacherId);
+    public List<Course> getCoursesByEnseignant(String enseignantId) {
+        return courseRepository.findByEnseignantId(enseignantId);
     }
 
-    // Cours d'un élève = cours de son niveau
-    public List<Course> getCoursesByMember(String memberId) {
-        User member = userRepository.findById(memberId)
+    public List<Course> getCoursesByMembre(String membreId) {
+        User membre = userRepository.findById(membreId)
                 .orElseThrow(() -> new RuntimeException("Membre introuvable"));
-        return courseRepository.findByTargetLevel(member.getExpertiseLevel());
+        return courseRepository.findByNiveauCible(membre.getNiveauExpertise());
     }
 }
