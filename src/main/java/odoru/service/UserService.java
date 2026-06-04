@@ -25,6 +25,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User login(String nomUtilisateur, String motDePasse){
+        User user = userRepository.findByNomUtilisateur(nomUtilisateur)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        if (!user.getMotDePasse().equals(motDePasse)) {
+            throw new RuntimeException("Mot de passe incorrect");
+        }
+        return user;
+    }
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }

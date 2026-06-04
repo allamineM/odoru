@@ -20,6 +20,12 @@ public class UserController {
         return ResponseEntity.ok(userService.inscription(user));
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestParam String nomUtilisateur,
+                                      @RequestParam String motDePasse) {
+        return ResponseEntity.ok(userService.login(nomUtilisateur, motDePasse));
+    }
+
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
