@@ -1,0 +1,37 @@
+<div class="page-container">
+  <div class="hero">
+    <h1>Bienvenue sur <span class="brand">Odoru</span></h1>
+    <p class="hero-subtitle">Plateforme de gestion de votre club de danse rythmique</p>
+  </div>
+
+  <div class="stats-banner">
+    <div class="stat-item">
+      <div class="stat-item-value">{{ stats.membres }}</div>
+      <div class="stat-item-label">👥 Membres</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-item-value">{{ stats.enseignants }}</div>
+      <div class="stat-item-label">🎓 Enseignants</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-item-value">{{ stats.cours }}</div>
+      <div class="stat-item-label">📚 Cours</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-item-value">{{ stats.competitions }}</div>
+      <div class="stat-item-label">🏆 Compétitions</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Accès rapide</h2>
+
+  <div class="home-grid">
+    <a *ngFor="let c of cards" [routerLink]="c.route" class="home-card"
+       [style.borderTop]="'4px solid ' + c.color">
+      <div class="home-card-icon" [style.background]="c.color + '15'">{{ c.icon }}</div>
+      <h3>{{ c.title }}</h3>
+      <p>{{ c.desc }}</p>
+      <span class="home-card-link" [style.color]="c.color">Accéder →</span>
+    </a>
+  </div>
+</div>

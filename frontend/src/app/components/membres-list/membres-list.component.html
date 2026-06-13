@@ -1,0 +1,100 @@
+<div class="card">
+  <h3 class="card-title">
+    Liste des membres
+    <span class="status-badge">{{ membres.length }}</span>
+  </h3>
+
+  <div class="form-group">
+    <input type="text" [(ngModel)]="search" placeholder="🔍 Rechercher par nom, prénom, email ou ville...">
+  </div>
+
+  <div class="table-container" *ngIf="filteredMembres.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Email</th>
+          <th>Niveau</th>
+          <th>Ville</th>
+          <th>Rôles</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let membre of filteredMembres">
+          <td><strong>{{ membre.nom }}</strong></td>
+          <td>{{ membre.prenom }}</td>
+          <td>{{ membre.email }}</td>
+          <td>{{ membre.niveauExpertise }}</td>
+          <td>{{ membre.adresse.ville }}</td>
+          <td>
+            <span *ngFor="let r of membre.roles" class="status-badge"
+                  [ngClass]="'status-' + r.toLowerCase()">{{ roleLabel(r) }}</span>
+          </td>
+          <td>
+            <button (click)="openManage(membre)" class="btn-icon" title="Gérer">⚙️</button>
+            <button (click)="deleteMembre(membre)" class="btn-icon btn-icon-danger" title="Supprimer">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="membres.length === 0" class="empty-state">Aucun membre inscrit pour le moment.</p>
+  <p *ngIf="membres.length > 0 && filteredMembres.length === 0" class="empty-state">
+    Aucun résultat pour "{{ search }}"
+  </p>
+</div>
+
+<!-- Modal de gestion -->
+<div *ngIf="selectedMembre" class="modal-overlay" (click)="closeManage()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Gérer {{ selectedMembre.prenom }} {{ selectedMembre.nom }}</h3>
+      <button class="btn-close" (click)="closeManage()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <p style="margin-bottom: 16px;">
+        <strong>Rôles actuels :</strong>
+        <span *ngFor="let r of selectedMembre.roles" class="status-badge"
+              [ngClass]="'status-' + r.toLowerCase()">{{ roleLabel(r) }}</span>
+      </p>
+
+      <hr>
+
+      <h4 style="margin-bottom: 12px; color: var(--text-secondary);">Modifier le niveau d'expertise</h4>
+      <div class="form-group">
+        <select [(ngModel)]="editLevel">
+          <option [value]="1">Niveau 1 — Débutant</option>
+          <option [value]="2">Niveau 2</option>
+          <option [value]="3">Niveau 3 — Intermédiaire</option>
+          <option [value]="4">Niveau 4</option>
+          <option [value]="5">Niveau 5 — Expert</option>
+        </select>
+      </div>
+      <button (click)="updateLevel()" class="btn btn-primary btn-full">
+        Mettre à jour le niveau
+      </button>
+
+      <hr>
+
+      <h4 style="margin-bottom: 12px; color: var(--text-secondary);">Ajouter un rôle</h4>
+      <div class="form-group">
+        <select [(ngModel)]="selectedRole">
+          <option value="TEACHER">Enseignant</option>
+          <option value="SECRETARY">Secrétaire</option>
+          <option value="PRESIDENT">Président(e)</option>
+        </select>
+      </div>
+      <button (click)="addRole()" class="btn btn-primary btn-full">
+        Attribuer le rôle
+      </button>
+
+      <div *ngIf="message" class="alert" [ngClass]="message.includes('Erreur') ? 'alert-error' : 'alert-success'">
+        {{ message }}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2 class="page-title"><span class="page-title-icon">🎫</span>Gestion des badges</h2>
+    <a routerLink="/" class="back-btn">← Accueil</a>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <h3 class="card-title">Assigner un badge (Secrétaire)</h3>
+      <div class="form-group">
+        <label>Numéro de badge</label>
+        <input type="text" [(ngModel)]="numeroBadge" placeholder="ex: BADGE001">
+      </div>
+      <div class="form-group">
+        <label>Membre</label>
+        <select [(ngModel)]="membreId">
+          <option value="">-- Choisir --</option>
+          <option *ngFor="let m of membres" [value]="m.id">{{ m.prenom }} {{ m.nom }}</option>
+        </select>
+      </div>
+      <div class="btn-actions">
+        <button (click)="assigner()" class="btn btn-primary btn-full">Assigner le badge</button>
+      </div>
+      <div *ngIf="messageAssign" class="alert" [ngClass]="messageAssign.includes('Erreur') ? 'alert-error' : 'alert-success'">
+        {{ messageAssign }}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Scanner un badge (Boîtier)</h3>
+      <div class="form-group">
+        <label>Numéro de badge</label>
+        <input type="text" [(ngModel)]="numeroBadgeScan" placeholder="ex: BADGE001">
+      </div>
+      <div class="form-group">
+        <label>Cours</label>
+        <select [(ngModel)]="coursIdScan">
+          <option value="">-- Choisir --</option>
+          <option *ngFor="let c of cours" [value]="c.id">
+            {{ c.titre }} - {{ c.dateHeure | date:'dd/MM/yyyy HH:mm' }}
+          </option>
+        </select>
+      </div>
+      <div class="btn-actions">
+        <button (click)="scanner()" class="btn btn-secondary btn-full">Scanner le badge</button>
+      </div>
+      <div *ngIf="messageScan" class="alert" [ngClass]="messageScan.includes('Erreur') ? 'alert-error' : 'alert-success'">
+        {{ messageScan }}
+      </div>
+    </div>
+  </div>
+</div>

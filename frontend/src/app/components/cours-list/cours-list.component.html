@@ -1,0 +1,33 @@
+<div class="card">
+  <h3 class="card-title">
+    Liste des cours
+    <span class="status-badge status-member" style="margin-left: 8px;">{{ cours.length }}</span>
+  </h3>
+
+  <div class="table-container" *ngIf="cours.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Niveau</th>
+          <th>Date</th>
+          <th>Lieu</th>
+          <th>Durée</th>
+          <th>Enseignant</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of cours">
+          <td><strong>{{ c.titre }}</strong></td>
+          <td><span class="status-badge status-member">Niveau {{ c.niveauCible }}</span></td>
+          <td>{{ c.dateHeure | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ c.lieu }}</td>
+          <td>{{ c.dureeMinutes }} min</td>
+          <td>{{ getNomEnseignant(c.enseignantId) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="cours.length === 0" class="empty-state">Aucun cours programmé.</p>
+</div>

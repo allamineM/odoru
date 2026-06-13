@@ -1,0 +1,57 @@
+<div class="card">
+  <h3 class="card-title">Créer un cours</h3>
+
+  <form (ngSubmit)="onSubmit()" #f="ngForm">
+
+    <div class="form-group">
+      <label>Enseignant</label>
+      <select name="enseignantId" [(ngModel)]="enseignantId" required>
+        <option value="">-- Choisir un enseignant --</option>
+        <option *ngFor="let e of enseignants" [value]="e.id">
+          {{ e.prenom }} {{ e.nom }} (niveau {{ e.niveauExpertise }})
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Titre</label>
+      <input type="text" name="titre" [(ngModel)]="cours.titre" required>
+    </div>
+
+    <div class="form-group">
+      <label>Niveau cible</label>
+      <select name="niveauCible" [(ngModel)]="cours.niveauCible">
+        <option [value]="1">Niveau 1</option>
+        <option [value]="2">Niveau 2</option>
+        <option [value]="3">Niveau 3</option>
+        <option [value]="4">Niveau 4</option>
+        <option [value]="5">Niveau 5</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Date et heure</label>
+      <input type="datetime-local" name="dateHeure" [(ngModel)]="cours.dateHeure" required>
+    </div>
+
+    <div class="form-group">
+      <label>Lieu</label>
+      <input type="text" name="lieu" [(ngModel)]="cours.lieu" required>
+    </div>
+
+    <div class="form-group">
+      <label>Durée (minutes)</label>
+      <input type="number" name="dureeMinutes" [(ngModel)]="cours.dureeMinutes" required>
+    </div>
+
+    <div class="btn-actions">
+      <button type="submit" class="btn btn-primary btn-full" [disabled]="!f.valid">
+        Créer le cours
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="message" class="alert" [ngClass]="message.includes('Erreur') ? 'alert-error' : 'alert-success'">
+    {{ message }}
+  </div>
+</div>

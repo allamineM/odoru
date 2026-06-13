@@ -1,0 +1,121 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2 class="page-title"><span class="page-title-icon">🏆</span>Gestion des compétitions</h2>
+    <a routerLink="/" class="back-btn">← Accueil</a>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <h3 class="card-title">Créer une compétition</h3>
+      <form (ngSubmit)="createCompetition()" #f="ngForm">
+        <div class="form-group">
+          <label>Enseignant</label>
+          <select name="enseignantId" [(ngModel)]="enseignantId" required>
+            <option value="">-- Choisir --</option>
+            <option *ngFor="let e of enseignants" [value]="e.id">
+              {{ e.prenom }} {{ e.nom }} (niveau {{ e.niveauExpertise }})
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Titre</label>
+          <input type="text" name="titre" [(ngModel)]="newComp.titre" required>
+        </div>
+        <div class="form-group">
+          <label>Niveau</label>
+          <select name="niveau" [(ngModel)]="newComp.niveauCible">
+            <option [value]="1">Niveau 1</option>
+            <option [value]="2">Niveau 2</option>
+            <option [value]="3">Niveau 3</option>
+            <option [value]="4">Niveau 4</option>
+            <option [value]="5">Niveau 5</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date et heure</label>
+          <input type="datetime-local" name="date" [(ngModel)]="newComp.dateHeure" required>
+        </div>
+        <div class="form-group">
+          <label>Lieu</label>
+          <input type="text" name="lieu" [(ngModel)]="newComp.lieu" required>
+        </div>
+        <div class="form-group">
+          <label>Durée (minutes)</label>
+          <input type="number" name="duree" [(ngModel)]="newComp.dureeMinutes" required>
+        </div>
+        <div class="btn-actions">
+          <button type="submit" class="btn btn-primary btn-full" [disabled]="!f.valid">
+            Créer la compétition
+          </button>
+        </div>
+      </form>
+      <div *ngIf="message" class="alert" [ngClass]="message.includes('Erreur') ? 'alert-error' : 'alert-success'">
+        {{ message }}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Ajouter un résultat</h3>
+      <div class="form-group">
+        <label>Compétition</label>
+        <select [(ngModel)]="competitionIdResultat">
+          <option value="">-- Choisir --</option>
+          <option *ngFor="let c of competitions" [value]="c.id">{{ c.titre }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Membre</label>
+        <select [(ngModel)]="membreIdResultat">
+          <option value="">-- Choisir --</option>
+          <option *ngFor="let m of membres" [value]="m.id">{{ m.prenom }} {{ m.nom }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Note /10</label>
+        <input type="number" step="0.1" min="0" max="10" [(ngModel)]="noteResultat">
+      </div>
+      <div class="btn-actions">
+        <button (click)="ajouterResultat()" class="btn btn-accent btn-full">
+          Enregistrer le résultat
+        </button>
+      </div>
+      <div *ngIf="messageResultat" class="alert" [ngClass]="messageResultat.includes('Erreur') ? 'alert-error' : 'alert-success'">
+        {{ messageResultat }}
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="card-title">Liste des compétitions</h3>
+    <div class="table-container" *ngIf="competitions.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Titre</th>
+            <th>Niveau</th>
+            <th>Date</th>
+            <th>Lieu</th>
+            <th>Enseignant</th>
+            <th>Résultats</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of competitions">
+            <td><strong>{{ c.titre }}</strong></td>
+            <td><span class="status-badge status-member">Niveau {{ c.niveauCible }}</span></td>
+            <td>{{ c.dateHeure | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ c.lieu }}</td>
+            <td>{{ getNomEnseignant(c.enseignantId) }}</td>
+            <td>
+              <div *ngFor="let r of getResultatsArray(c)" style="margin-bottom:4px;">
+                {{ enseignantsMap[r.membreId] || r.membreId }} :
+                <strong style="color: var(--accent);">{{ r.note }}/10</strong>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p *ngIf="competitions.length === 0" class="empty-state">Aucune compétition planifiée.</p>
+  </div>
+</div>

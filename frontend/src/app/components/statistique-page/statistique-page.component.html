@@ -1,0 +1,42 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2 class="page-title"><span class="page-title-icon">📊</span>Statistiques du Président</h2>
+    <a routerLink="/" class="back-btn">← Accueil</a>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <h3 class="card-title">Résumé des cours</h3>
+      <div *ngIf="resumeCours" style="text-align: center;">
+        <div class="stat-label">Nombre total de cours</div>
+        <div class="stat-value">{{ resumeCours.nombreCours }}</div>
+        <hr>
+        <div class="stat-label">Moyenne d'élèves présents</div>
+        <div class="stat-value">{{ resumeCours.moyenneElevesPresents }}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Compétitions par niveau</h3>
+      <div class="form-group">
+        <label>Sélectionner un niveau</label>
+        <select [(ngModel)]="niveau">
+          <option [value]="1">Niveau 1</option>
+          <option [value]="2">Niveau 2</option>
+          <option [value]="3">Niveau 3</option>
+          <option [value]="4">Niveau 4</option>
+          <option [value]="5">Niveau 5</option>
+        </select>
+      </div>
+      <div class="btn-actions">
+        <button (click)="rechercherCompetitions()" class="btn btn-accent btn-full">
+          Rechercher
+        </button>
+      </div>
+      <div *ngIf="nbCompetitions" style="text-align: center; margin-top: 20px;">
+        <div class="stat-label">Compétitions niveau {{ nbCompetitions.niveau }}</div>
+        <div class="stat-value">{{ nbCompetitions.nombreCompetitions }}</div>
+      </div>
+    </div>
+  </div>
+</div>

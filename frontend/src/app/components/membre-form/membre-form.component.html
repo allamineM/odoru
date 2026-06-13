@@ -1,0 +1,62 @@
+<div class="card">
+  <h3 class="card-title">Inscription d'un membre</h3>
+
+  <form (ngSubmit)="onSubmit()" #f="ngForm">
+
+    <div class="form-group">
+      <label>Nom</label>
+      <input type="text" name="nom" [(ngModel)]="membre.nom" required>
+    </div>
+
+    <div class="form-group">
+      <label>Prénom</label>
+      <input type="text" name="prenom" [(ngModel)]="membre.prenom" required>
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" name="email" [(ngModel)]="membre.email" required>
+    </div>
+
+    <div class="form-group">
+      <label>Nom d'utilisateur</label>
+      <input type="text" name="nomUtilisateur" [(ngModel)]="membre.nomUtilisateur" required>
+    </div>
+
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" name="motDePasse" [(ngModel)]="membre.motDePasse" required>
+    </div>
+
+    <div class="form-group">
+      <label>Niveau d'expertise</label>
+      <select name="niveauExpertise" [(ngModel)]="membre.niveauExpertise">
+        <option [value]="1">Niveau 1 — Débutant</option>
+        <option [value]="2">Niveau 2</option>
+        <option [value]="3">Niveau 3 — Intermédiaire</option>
+        <option [value]="4">Niveau 4</option>
+        <option [value]="5">Niveau 5 — Expert</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Ville</label>
+      <input type="text" name="ville" [(ngModel)]="membre.adresse.ville" required>
+    </div>
+
+    <div class="form-group">
+      <label>Pays</label>
+      <input type="text" name="pays" [(ngModel)]="membre.adresse.pays" required>
+    </div>
+
+    <div class="btn-actions">
+      <button type="submit" class="btn btn-primary btn-full" [disabled]="!f.valid">
+        S'inscrire
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="message" class="alert" [ngClass]="message.includes('Erreur') ? 'alert-error' : 'alert-success'">
+    {{ message }}
+  </div>
+</div>
