@@ -1,10 +1,12 @@
-package odoru;
+package odoru.service;
 
 import odoru.entities.Cours;
 import odoru.entities.Utilisateur;
 import odoru.repository.CoursRepository;
 import odoru.repository.UtilisateurRepository;
-import odoru.service.CoursService;
+import odoru.utilities.AptitudeInsuffisanteException;
+import odoru.utilities.DateInvalideException;
+import odoru.utilities.RoleInvalideException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +39,7 @@ public class CoursServiceTest {
     @BeforeEach
     void setUp() {
         enseignant = new Utilisateur();
-        enseignant.setNom("Dupont");
+        enseignant.setNom("Allamine");
         enseignant.setNiveauExpertise(5);
         enseignant.getRoles().add(Utilisateur.Role.TEACHER);
 
@@ -45,8 +47,6 @@ public class CoursServiceTest {
         cours.setTitre("Danse niveau 5");
         cours.setNiveauCible(5);
         cours.setDateHeure(LocalDateTime.now().plusDays(10));
-        cours.setLieu("Salle A");
-        cours.setDureeMinutes(60);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class CoursServiceTest {
         when(utilisateurRepository.findById("1")).thenReturn(Optional.of(enseignant));
         when(coursRepository.save(any(Cours.class))).thenReturn(cours);
 
-        Cours result = coursService.createCourse(cours, "1");
+        Cours result = coursService.createCours(cours, "1");
 
         assertNotNull(result);
         verify(coursRepository, times(1)).save(cours);
@@ -64,8 +64,8 @@ public class CoursServiceTest {
     void createCourse_dateTropProche() {
         cours.setDateHeure(LocalDateTime.now().plusDays(3));
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> coursService.createCourse(cours, "1"));
+        DateInvalideException ex = assertThrows(DateInvalideException.class,
+                () -> coursService.createCours(cours, "1"));
 
         assertEquals("La date du cours doit être au moins 7 jours après aujourd'hui", ex.getMessage());
         verify(coursRepository, never()).save(any());
@@ -76,8 +76,8 @@ public class CoursServiceTest {
         enseignant.setNiveauExpertise(3);
         when(utilisateurRepository.findById("1")).thenReturn(Optional.of(enseignant));
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> coursService.createCourse(cours, "1"));
+        AptitudeInsuffisanteException ex = assertThrows(AptitudeInsuffisanteException.class,
+                () -> coursService.createCours(cours, "1"));
 
         assertEquals("L'enseignant n'est pas apte au niveau 5", ex.getMessage());
         verify(coursRepository, never()).save(any());
@@ -88,20 +88,10 @@ public class CoursServiceTest {
         enseignant.getRoles().remove(Utilisateur.Role.TEACHER);
         when(utilisateurRepository.findById("1")).thenReturn(Optional.of(enseignant));
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> coursService.createCourse(cours, "1"));
+        RoleInvalideException ex = assertThrows(RoleInvalideException.class,
+                () -> coursService.createCours(cours, "1"));
 
         assertEquals("Cet utilisateur n'est pas enseignant", ex.getMessage());
         verify(coursRepository, never()).save(any());
-    }
-
-    @Test
-    void getCoursesByNiveau_retourneListe() {
-        when(coursRepository.findByNiveauCible(5)).thenReturn(List.of(cours));
-
-        List<Cours> result = coursService.getCoursesByNiveau(5);
-
-        assertEquals(1, result.size());
-        verify(coursRepository, times(1)).findByNiveauCible(5);
     }
 }

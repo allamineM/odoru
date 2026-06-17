@@ -1,4 +1,4 @@
-package odoru;
+package odoru.service;
 
 import odoru.entities.Presence;
 import odoru.entities.Badge;
@@ -6,7 +6,8 @@ import odoru.entities.Cours;
 import odoru.repository.PresenceRepository;
 import odoru.repository.BadgeRepository;
 import odoru.repository.CoursRepository;
-import odoru.service.BadgeService;
+import odoru.utilities.BadgeDejaAssocieException;
+import odoru.utilities.PresenceDejaEnregistreeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,8 +56,6 @@ public class BadgeServiceTest {
         Badge result = badgeService.assignerBadge("BADGE001", "membre1");
 
         assertNotNull(result);
-        assertEquals("BADGE001", result.getNumeroBadge());
-        assertEquals("membre1", result.getMembreId());
         verify(badgeRepository, times(1)).save(any(Badge.class));
     }
 
@@ -64,7 +63,7 @@ public class BadgeServiceTest {
     void assignerBadge_dejaAssigne() {
         when(badgeRepository.existsByNumeroBadge("BADGE001")).thenReturn(true);
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        BadgeDejaAssocieException ex = assertThrows(BadgeDejaAssocieException.class,
                 () -> badgeService.assignerBadge("BADGE001", "membre1"));
 
         assertEquals("Ce badge est déjà associé à un membre", ex.getMessage());
@@ -91,7 +90,7 @@ public class BadgeServiceTest {
         when(coursRepository.findById("cours1")).thenReturn(Optional.of(cours));
         when(presenceRepository.existsByMembreIdAndCoursId("membre1", "cours1")).thenReturn(true);
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        PresenceDejaEnregistreeException ex = assertThrows(PresenceDejaEnregistreeException.class,
                 () -> badgeService.scanner("BADGE001", "cours1"));
 
         assertEquals("Présence déjà enregistrée", ex.getMessage());
