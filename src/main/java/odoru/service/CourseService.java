@@ -2,8 +2,8 @@ package odoru.service;
 
 import odoru.entities.Cours;
 import odoru.entities.Utilisateur;
-import odoru.repository.CourseRepository;
-import odoru.repository.UserRepository;
+import odoru.repository.CoursRepository;
+import odoru.repository.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,17 +14,17 @@ import java.util.List;
 public class CourseService {
 
     @Autowired
-    private CourseRepository courseRepository;
+    private CoursRepository coursRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UtilisateurRepository utilisateurRepository;
 
     public Cours createCourse(Cours cours, String enseignantId) {
         if (cours.getDateHeure().isBefore(LocalDateTime.now().plusDays(7))) {
             throw new RuntimeException("La date du cours doit être au moins 7 jours après aujourd'hui");
         }
 
-        Utilisateur enseignant = userRepository.findById(enseignantId)
+        Utilisateur enseignant = utilisateurRepository.findById(enseignantId)
                 .orElseThrow(() -> new RuntimeException("Enseignant introuvable"));
 
         if (!enseignant.getRoles().contains(Utilisateur.Role.TEACHER)) {
@@ -36,24 +36,24 @@ public class CourseService {
         }
 
         cours.setEnseignantId(enseignantId);
-        return courseRepository.save(cours);
+        return coursRepository.save(cours);
     }
 
     public List<Cours> getAllCourses() {
-        return courseRepository.findAll();
+        return coursRepository.findAll();
     }
 
     public List<Cours> getCoursesByNiveau(int niveau) {
-        return courseRepository.findByNiveauCible(niveau);
+        return coursRepository.findByNiveauCible(niveau);
     }
 
     public List<Cours> getCoursesByEnseignant(String enseignantId) {
-        return courseRepository.findByEnseignantId(enseignantId);
+        return coursRepository.findByEnseignantId(enseignantId);
     }
 
     public List<Cours> getCoursesByMembre(String membreId) {
-        Utilisateur membre = userRepository.findById(membreId)
+        Utilisateur membre = utilisateurRepository.findById(membreId)
                 .orElseThrow(() -> new RuntimeException("Membre introuvable"));
-        return courseRepository.findByNiveauCible(membre.getNiveauExpertise());
+        return coursRepository.findByNiveauCible(membre.getNiveauExpertise());
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CourseRepository extends MongoRepository<Cours, String> {
+public interface CoursRepository extends MongoRepository<Cours, String> {
 
     List<Cours> findByNiveauCible(int niveauCible);
     List<Cours> findByEnseignantId(String enseignantId);

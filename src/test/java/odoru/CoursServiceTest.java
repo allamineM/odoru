@@ -2,8 +2,8 @@ package odoru;
 
 import odoru.entities.Cours;
 import odoru.entities.Utilisateur;
-import odoru.repository.CourseRepository;
-import odoru.repository.UserRepository;
+import odoru.repository.CoursRepository;
+import odoru.repository.UtilisateurRepository;
 import odoru.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,10 +23,10 @@ import static org.mockito.Mockito.*;
 public class CoursServiceTest {
 
     @Mock
-    private CourseRepository courseRepository;
+    private CoursRepository coursRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private UtilisateurRepository utilisateurRepository;
 
     @InjectMocks
     private CourseService courseService;
@@ -51,13 +51,13 @@ public class CoursServiceTest {
 
     @Test
     void createCourse_succes() {
-        when(userRepository.findById("1")).thenReturn(Optional.of(enseignant));
-        when(courseRepository.save(any(Cours.class))).thenReturn(cours);
+        when(utilisateurRepository.findById("1")).thenReturn(Optional.of(enseignant));
+        when(coursRepository.save(any(Cours.class))).thenReturn(cours);
 
         Cours result = courseService.createCourse(cours, "1");
 
         assertNotNull(result);
-        verify(courseRepository, times(1)).save(cours);
+        verify(coursRepository, times(1)).save(cours);
     }
 
     @Test
@@ -68,40 +68,40 @@ public class CoursServiceTest {
                 () -> courseService.createCourse(cours, "1"));
 
         assertEquals("La date du cours doit être au moins 7 jours après aujourd'hui", ex.getMessage());
-        verify(courseRepository, never()).save(any());
+        verify(coursRepository, never()).save(any());
     }
 
     @Test
     void createCourse_enseignantPasApteAuNiveau() {
         enseignant.setNiveauExpertise(3);
-        when(userRepository.findById("1")).thenReturn(Optional.of(enseignant));
+        when(utilisateurRepository.findById("1")).thenReturn(Optional.of(enseignant));
 
         RuntimeException ex = assertThrows(RuntimeException.class,
                 () -> courseService.createCourse(cours, "1"));
 
         assertEquals("L'enseignant n'est pas apte au niveau 5", ex.getMessage());
-        verify(courseRepository, never()).save(any());
+        verify(coursRepository, never()).save(any());
     }
 
     @Test
     void createCourse_pasEnseignant() {
         enseignant.getRoles().remove(Utilisateur.Role.TEACHER);
-        when(userRepository.findById("1")).thenReturn(Optional.of(enseignant));
+        when(utilisateurRepository.findById("1")).thenReturn(Optional.of(enseignant));
 
         RuntimeException ex = assertThrows(RuntimeException.class,
                 () -> courseService.createCourse(cours, "1"));
 
         assertEquals("Cet utilisateur n'est pas enseignant", ex.getMessage());
-        verify(courseRepository, never()).save(any());
+        verify(coursRepository, never()).save(any());
     }
 
     @Test
     void getCoursesByNiveau_retourneListe() {
-        when(courseRepository.findByNiveauCible(5)).thenReturn(List.of(cours));
+        when(coursRepository.findByNiveauCible(5)).thenReturn(List.of(cours));
 
         List<Cours> result = courseService.getCoursesByNiveau(5);
 
         assertEquals(1, result.size());
-        verify(courseRepository, times(1)).findByNiveauCible(5);
+        verify(coursRepository, times(1)).findByNiveauCible(5);
     }
 }

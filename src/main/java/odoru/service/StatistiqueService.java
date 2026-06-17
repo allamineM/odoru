@@ -3,10 +3,10 @@ package odoru.service;
 import odoru.entities.Presence;
 import odoru.entities.Cours;
 import odoru.entities.Utilisateur;
-import odoru.repository.AttendanceRepository;
+import odoru.repository.PresenceRepository;
 import odoru.repository.CompetitionRepository;
-import odoru.repository.CourseRepository;
-import odoru.repository.UserRepository;
+import odoru.repository.CoursRepository;
+import odoru.repository.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,24 +17,24 @@ import java.util.*;
 public class StatistiqueService {
 
     @Autowired
-    private CourseRepository courseRepository;
+    private CoursRepository coursRepository;
 
     @Autowired
     private CompetitionRepository competitionRepository;
 
     @Autowired
-    private AttendanceRepository attendanceRepository;
+    private PresenceRepository presenceRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UtilisateurRepository utilisateurRepository;
 
     // Nombre de cours et nombre moyen d'élèves présents
     public Map<String, Object> getNombreCoursEtMoyennePresences() {
-        List<Cours> cours = courseRepository.findAll();
+        List<Cours> cours = coursRepository.findAll();
         long nombreCours = cours.size();
 
         double moyenne = cours.stream()
-                .mapToInt(c -> attendanceRepository.findByCoursId(c.getId()).size())
+                .mapToInt(c -> presenceRepository.findByCoursId(c.getId()).size())
                 .average()
                 .orElse(0.0);
 
@@ -46,12 +46,12 @@ public class StatistiqueService {
 
     // Nombre et liste des élèves présents à un cours donné
     public Map<String, Object> getElevesParCours(String coursId) {
-        List<Presence> presences = attendanceRepository.findByCoursId(coursId);
+        List<Presence> presences = presenceRepository.findByCoursId(coursId);
 
         List<Map<String, String>> eleves = presences.stream().map(p -> {
             Map<String, String> eleve = new LinkedHashMap<>();
             eleve.put("membreId", p.getMembreId());
-            userRepository.findById(p.getMembreId()).ifPresent(u -> {
+            utilisateurRepository.findById(p.getMembreId()).ifPresent(u -> {
                 eleve.put("nom", u.getNom());
                 eleve.put("prenom", u.getPrenom());
             });
@@ -69,20 +69,20 @@ public class StatistiqueService {
     public List<Map<String, Object>> getCoursMembreAvecPresences(String membreId,
                                                                    LocalDateTime debut,
                                                                    LocalDateTime fin) {
-        List<Cours> cours = courseRepository.findAll().stream()
+        List<Cours> cours = coursRepository.findAll().stream()
                 .filter(c -> {
                     if (debut != null && c.getDateHeure().isBefore(debut)) return false;
                     if (fin != null && c.getDateHeure().isAfter(fin)) return false;
                     return true;
                 }).toList();
 
-        Utilisateur membre = userRepository.findById(membreId)
+        Utilisateur membre = utilisateurRepository.findById(membreId)
                 .orElseThrow(() -> new RuntimeException("Membre introuvable"));
 
         return cours.stream()
                 .filter(c -> c.getNiveauCible() == membre.getNiveauExpertise())
                 .map(c -> {
-                    boolean present = attendanceRepository.existsByMembreIdAndCoursId(membreId, c.getId());
+                    boolean present = presenceRepository.existsByMembreIdAndCoursId(membreId, c.getId());
                     Map<String, Object> entry = new LinkedHashMap<>();
                     entry.put("coursId", c.getId());
                     entry.put("titre", c.getTitre());

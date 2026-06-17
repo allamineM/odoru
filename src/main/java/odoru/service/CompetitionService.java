@@ -3,7 +3,7 @@ package odoru.service;
 import odoru.entities.Competition;
 import odoru.entities.Utilisateur;
 import odoru.repository.CompetitionRepository;
-import odoru.repository.UserRepository;
+import odoru.repository.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +17,14 @@ public class CompetitionService {
     private CompetitionRepository competitionRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UtilisateurRepository utilisateurRepository;
 
     public Competition createCompetition(Competition competition, String enseignantId) {
         if (competition.getDateHeure().isBefore(LocalDateTime.now().plusDays(7))) {
             throw new RuntimeException("La date doit être au moins 7 jours après aujourd'hui");
         }
 
-        Utilisateur enseignant = userRepository.findById(enseignantId)
+        Utilisateur enseignant = utilisateurRepository.findById(enseignantId)
                 .orElseThrow(() -> new RuntimeException("Enseignant introuvable"));
 
         if (!enseignant.getRoles().contains(Utilisateur.Role.TEACHER)) {

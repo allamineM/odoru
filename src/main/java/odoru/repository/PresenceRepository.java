@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AttendanceRepository extends MongoRepository<Presence, String> {
+public interface PresenceRepository extends MongoRepository<Presence, String> {
 
     List<Presence> findByMembreId(String membreId);
     List<Presence> findByCoursId(String coursId);

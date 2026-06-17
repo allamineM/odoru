@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends MongoRepository<Utilisateur, String> {
+public interface UtilisateurRepository extends MongoRepository<Utilisateur, String> {
 
     Optional<Utilisateur> findByNomUtilisateur(String nomUtilisateur);
     Optional<Utilisateur> findByEmail(String email);

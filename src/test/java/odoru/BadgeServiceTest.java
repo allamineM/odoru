@@ -3,9 +3,9 @@ package odoru;
 import odoru.entities.Presence;
 import odoru.entities.Badge;
 import odoru.entities.Cours;
-import odoru.repository.AttendanceRepository;
+import odoru.repository.PresenceRepository;
 import odoru.repository.BadgeRepository;
-import odoru.repository.CourseRepository;
+import odoru.repository.CoursRepository;
 import odoru.service.BadgeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,10 +26,10 @@ public class BadgeServiceTest {
     private BadgeRepository badgeRepository;
 
     @Mock
-    private AttendanceRepository attendanceRepository;
+    private PresenceRepository presenceRepository;
 
     @Mock
-    private CourseRepository courseRepository;
+    private CoursRepository coursRepository;
 
     @InjectMocks
     private BadgeService badgeService;
@@ -74,9 +74,9 @@ public class BadgeServiceTest {
     @Test
     void scanner_succes() {
         when(badgeRepository.findByNumeroBadge("BADGE001")).thenReturn(Optional.of(badge));
-        when(courseRepository.findById("cours1")).thenReturn(Optional.of(cours));
-        when(attendanceRepository.existsByMembreIdAndCoursId("membre1", "cours1")).thenReturn(false);
-        when(attendanceRepository.save(any(Presence.class))).thenAnswer(i -> i.getArgument(0));
+        when(coursRepository.findById("cours1")).thenReturn(Optional.of(cours));
+        when(presenceRepository.existsByMembreIdAndCoursId("membre1", "cours1")).thenReturn(false);
+        when(presenceRepository.save(any(Presence.class))).thenAnswer(i -> i.getArgument(0));
 
         Presence result = badgeService.scanner("BADGE001", "cours1");
 
@@ -88,13 +88,13 @@ public class BadgeServiceTest {
     @Test
     void scanner_presenceDejaEnregistree() {
         when(badgeRepository.findByNumeroBadge("BADGE001")).thenReturn(Optional.of(badge));
-        when(courseRepository.findById("cours1")).thenReturn(Optional.of(cours));
-        when(attendanceRepository.existsByMembreIdAndCoursId("membre1", "cours1")).thenReturn(true);
+        when(coursRepository.findById("cours1")).thenReturn(Optional.of(cours));
+        when(presenceRepository.existsByMembreIdAndCoursId("membre1", "cours1")).thenReturn(true);
 
         RuntimeException ex = assertThrows(RuntimeException.class,
                 () -> badgeService.scanner("BADGE001", "cours1"));
 
         assertEquals("Présence déjà enregistrée", ex.getMessage());
-        verify(attendanceRepository, never()).save(any());
+        verify(presenceRepository, never()).save(any());
     }
 }
