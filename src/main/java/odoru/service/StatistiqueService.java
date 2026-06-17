@@ -28,7 +28,6 @@ public class StatistiqueService {
     @Autowired
     private UtilisateurRepository utilisateurRepository;
 
-    // Nombre de cours et nombre moyen d'élèves présents
     public Map<String, Object> getNombreCoursEtMoyennePresences() {
         List<Cours> cours = coursRepository.findAll();
         long nombreCours = cours.size();
@@ -44,7 +43,6 @@ public class StatistiqueService {
         return result;
     }
 
-    // Nombre et liste des élèves présents à un cours donné
     public Map<String, Object> getElevesParCours(String coursId) {
         List<Presence> presences = presenceRepository.findByCoursId(coursId);
 
@@ -65,10 +63,7 @@ public class StatistiqueService {
         return result;
     }
 
-    // Liste des cours d'un élève avec présences/absences (filtrable par période)
-    public List<Map<String, Object>> getCoursMembreAvecPresences(String membreId,
-                                                                   LocalDateTime debut,
-                                                                   LocalDateTime fin) {
+    public List<Map<String, Object>> getCoursMembreAvecPresences(String membreId, LocalDateTime debut, LocalDateTime fin) {
         List<Cours> cours = coursRepository.findAll().stream()
                 .filter(c -> {
                     if (debut != null && c.getDateHeure().isBefore(debut)) return false;
@@ -92,7 +87,6 @@ public class StatistiqueService {
                 }).toList();
     }
 
-    // Nombre de compétitions pour un niveau donné
     public Map<String, Object> getNombreCompetitionsParNiveau(int niveau) {
         long nombre = competitionRepository.findByNiveauCible(niveau).size();
         Map<String, Object> result = new LinkedHashMap<>();
@@ -101,10 +95,7 @@ public class StatistiqueService {
         return result;
     }
 
-    // Liste des compétitions d'un élève avec résultats (filtrable par période)
-    public List<Map<String, Object>> getCompetitionsMembreAvecResultats(String membreId,
-                                                                          LocalDateTime debut,
-                                                                          LocalDateTime fin) {
+    public List<Map<String, Object>> getCompetitionsMembreAvecResultats(String membreId, LocalDateTime debut, LocalDateTime fin) {
         return competitionRepository.findAll().stream()
                 .filter(c -> c.getResultats().containsKey(membreId))
                 .filter(c -> {

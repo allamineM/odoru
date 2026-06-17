@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UtilisateurService {
 
     @Autowired
     private UtilisateurRepository utilisateurRepository;
@@ -34,11 +34,11 @@ public class UserService {
         return utilisateur;
     }
 
-    public List<Utilisateur> getAllUsers() {
+    public List<Utilisateur> getAllUtilisateurs() {
         return utilisateurRepository.findAll();
     }
 
-    public Optional<Utilisateur> getUserById(String id) {
+    public Optional<Utilisateur> getUtilisateurById(String id) {
         return utilisateurRepository.findById(id);
     }
 
@@ -56,7 +56,7 @@ public class UserService {
         return utilisateurRepository.save(utilisateur);
     }
 
-    public void deleteUser(String id) {
+    public void deleteUtilisateur(String id) {
         utilisateurRepository.deleteById(id);
     }
 }

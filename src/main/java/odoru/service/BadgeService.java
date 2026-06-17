@@ -56,7 +56,7 @@ public class BadgeService {
         return presenceRepository.save(presence);
     }
 
-    public List<Cours> getCourseSuivisParMembre(String membreId) {
+    public List<Cours> getCoursSuivisParMembre(String membreId) {
         return presenceRepository.findByMembreId(membreId).stream()
                 .map(a -> coursRepository.findById(a.getCoursId()).orElse(null))
                 .filter(c -> c != null)
