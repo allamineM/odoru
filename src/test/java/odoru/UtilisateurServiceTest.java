@@ -78,7 +78,7 @@ public class UtilisateurServiceTest {
     void getAllUsers_retourneListe() {
         when(utilisateurRepository.findAll()).thenReturn(List.of(utilisateur));
 
-        List<Utilisateur> result = utilisateurService.getAllUsers();
+        List<Utilisateur> result = utilisateurService.getAllUtilisateurs();
 
         assertEquals(1, result.size());
         verify(utilisateurRepository, times(1)).findAll();
