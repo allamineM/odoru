@@ -12,20 +12,37 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MetierException.class)
-    public ResponseEntity<Object> handleMetierException(MetierException ex) {
+    // On groupe toutes les erreurs liées aux règles de gestion (HTTP 400)
+    @ExceptionHandler({
+            NomUtilisateurExistantException.class,
+            EmailExistantException.class,
+            MotDePasseIncorrectException.class,
+            DateInvalideException.class,
+            RoleInvalideException.class,
+            AptitudeInsuffisanteException.class,
+            NoteInvalideException.class,
+            BadgeDejaAssocieException.class,
+            PresenceDejaEnregistreeException.class
+    })
+    public ResponseEntity<Object> handleBadRequestExceptions(RuntimeException ex) {
         return buildResponseEntity(HttpStatus.BAD_REQUEST, "Erreur Métier", ex.getMessage());
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex) {
+    // On groupe toutes les erreurs liées à un élément introuvable en base (HTTP 404)
+    @ExceptionHandler({
+            UtilisateurIntrouvableException.class,
+            CoursIntrouvableException.class,
+            CompetitionIntrouvableException.class,
+            BadgeIntrouvableException.class
+    })
+    public ResponseEntity<Object> handleNotFoundExceptions(RuntimeException ex) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, "Ressource Introuvable", ex.getMessage());
     }
 
-    // Capture de sécurité pour les anciennes RuntimeException non modifiées
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
-        return buildResponseEntity(HttpStatus.BAD_REQUEST, "Erreur Serveur", ex.getMessage());
+    // Sécurité de base pour toute autre erreur non prévue (HTTP 500)
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleGenericException(Exception ex) {
+        return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur Serveur", ex.getMessage());
     }
 
     private ResponseEntity<Object> buildResponseEntity(HttpStatus status, String error, String message) {

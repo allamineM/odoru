@@ -7,6 +7,7 @@ import odoru.repository.PresenceRepository;
 import odoru.repository.CompetitionRepository;
 import odoru.repository.CoursRepository;
 import odoru.repository.UtilisateurRepository;
+import odoru.utilities.UtilisateurIntrouvableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +73,7 @@ public class StatistiqueService {
                 }).toList();
 
         Utilisateur membre = utilisateurRepository.findById(membreId)
-                .orElseThrow(() -> new RuntimeException("Membre introuvable"));
+                .orElseThrow(() -> new UtilisateurIntrouvableException("Membre introuvable"));
 
         return cours.stream()
                 .filter(c -> c.getNiveauCible() == membre.getNiveauExpertise())

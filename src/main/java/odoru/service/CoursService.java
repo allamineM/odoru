@@ -4,6 +4,7 @@ import odoru.entities.Cours;
 import odoru.entities.Utilisateur;
 import odoru.repository.CoursRepository;
 import odoru.repository.UtilisateurRepository;
+import odoru.utilities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,18 +22,18 @@ public class CoursService {
 
     public Cours createCours(Cours cours, String enseignantId) {
         if (cours.getDateHeure().isBefore(LocalDateTime.now().plusDays(7))) {
-            throw new RuntimeException("La date du cours doit être au moins 7 jours après aujourd'hui");
+            throw new DateInvalideException("La date du cours doit être au moins 7 jours après aujourd'hui");
         }
 
         Utilisateur enseignant = utilisateurRepository.findById(enseignantId)
-                .orElseThrow(() -> new RuntimeException("Enseignant introuvable"));
+                .orElseThrow(() -> new UtilisateurIntrouvableException("Enseignant introuvable"));
 
         if (!enseignant.getRoles().contains(Utilisateur.Role.TEACHER)) {
-            throw new RuntimeException("Cet utilisateur n'est pas enseignant");
+            throw new RoleInvalideException("Cet utilisateur n'est pas enseignant");
         }
 
         if (enseignant.getNiveauExpertise() < cours.getNiveauCible()) {
-            throw new RuntimeException("L'enseignant n'est pas apte au niveau " + cours.getNiveauCible());
+            throw new AptitudeInsuffisanteException("L'enseignant n'est pas apte au niveau " + cours.getNiveauCible());
         }
 
         cours.setEnseignantId(enseignantId);
@@ -53,7 +54,7 @@ public class CoursService {
 
     public List<Cours> getCoursByMembre(String membreId) {
         Utilisateur membre = utilisateurRepository.findById(membreId)
-                .orElseThrow(() -> new RuntimeException("Membre introuvable"));
+                .orElseThrow(() -> new UtilisateurIntrouvableException("Membre introuvable"));
         return coursRepository.findByNiveauCible(membre.getNiveauExpertise());
     }
 }

@@ -4,6 +4,7 @@ import odoru.entities.Competition;
 import odoru.entities.Utilisateur;
 import odoru.repository.CompetitionRepository;
 import odoru.repository.UtilisateurRepository;
+import odoru.utilities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,18 +22,18 @@ public class CompetitionService {
 
     public Competition createCompetition(Competition competition, String enseignantId) {
         if (competition.getDateHeure().isBefore(LocalDateTime.now().plusDays(7))) {
-            throw new RuntimeException("La date doit être au moins 7 jours après aujourd'hui");
+            throw new DateInvalideException("La date doit être au moins 7 jours après aujourd'hui");
         }
 
         Utilisateur enseignant = utilisateurRepository.findById(enseignantId)
-                .orElseThrow(() -> new RuntimeException("Enseignant introuvable"));
+                .orElseThrow(() -> new UtilisateurIntrouvableException("Enseignant introuvable"));
 
         if (!enseignant.getRoles().contains(Utilisateur.Role.TEACHER)) {
-            throw new RuntimeException("Cet utilisateur n'est pas enseignant");
+            throw new RoleInvalideException("Cet utilisateur n'est pas enseignant");
         }
 
         if (enseignant.getNiveauExpertise() < competition.getNiveauCible()) {
-            throw new RuntimeException("L'enseignant n'est pas apte au niveau " + competition.getNiveauCible());
+            throw new AptitudeInsuffisanteException("L'enseignant n'est pas apte au niveau " + competition.getNiveauCible());
         }
 
         competition.setEnseignantId(enseignantId);
@@ -41,13 +42,13 @@ public class CompetitionService {
 
     public Competition addResultat(String competitionId, String membreId, double note) {
         if (note < 0 || note > 10) {
-            throw new RuntimeException("La note doit être entre 0 et 10");
+            throw new NoteInvalideException("La note doit être entre 0 et 10");
         }
 
         double noteArrondie = Math.round(note * 10.0) / 10.0;
 
         Competition competition = competitionRepository.findById(competitionId)
-                .orElseThrow(() -> new RuntimeException("Compétition introuvable"));
+                .orElseThrow(() -> new CompetitionIntrouvableException("Compétition introuvable"));
 
         competition.getResultats().put(membreId, noteArrondie);
         return competitionRepository.save(competition);

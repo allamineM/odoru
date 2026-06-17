@@ -6,6 +6,7 @@ import odoru.entities.Cours;
 import odoru.repository.PresenceRepository;
 import odoru.repository.BadgeRepository;
 import odoru.repository.CoursRepository;
+import odoru.utilities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class BadgeService {
 
     public Badge assignerBadge(String numeroBadge, String membreId) {
         if (badgeRepository.existsByNumeroBadge(numeroBadge)) {
-            throw new RuntimeException("Ce badge est déjà associé à un membre");
+            throw new BadgeDejaAssocieException("Ce badge est déjà associé à un membre");
         }
         Badge badge = new Badge();
         badge.setNumeroBadge(numeroBadge);
@@ -35,19 +36,19 @@ public class BadgeService {
 
     public void retirerBadge(String numeroBadge) {
         Badge badge = badgeRepository.findByNumeroBadge(numeroBadge)
-                .orElseThrow(() -> new RuntimeException("Badge introuvable"));
+                .orElseThrow(() -> new BadgeIntrouvableException("Badge introuvable"));
         badgeRepository.delete(badge);
     }
 
     public Presence scanner(String numeroBadge, String coursId) {
         Badge badge = badgeRepository.findByNumeroBadge(numeroBadge)
-                .orElseThrow(() -> new RuntimeException("Badge inconnu"));
+                .orElseThrow(() -> new BadgeIntrouvableException("Badge inconnu"));
 
         coursRepository.findById(coursId)
-                .orElseThrow(() -> new RuntimeException("Cours introuvable"));
+                .orElseThrow(() -> new CoursIntrouvableException("Cours introuvable"));
 
         if (presenceRepository.existsByMembreIdAndCoursId(badge.getMembreId(), coursId)) {
-            throw new RuntimeException("Présence déjà enregistrée");
+            throw new PresenceDejaEnregistreeException("Présence déjà enregistrée");
         }
 
         Presence presence = new Presence();
