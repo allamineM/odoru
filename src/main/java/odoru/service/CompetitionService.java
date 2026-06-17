@@ -1,7 +1,7 @@
 package odoru.service;
 
-import odoru.domain.Competition;
-import odoru.domain.User;
+import odoru.entities.Competition;
+import odoru.entities.Utilisateur;
 import odoru.repository.CompetitionRepository;
 import odoru.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +24,10 @@ public class CompetitionService {
             throw new RuntimeException("La date doit être au moins 7 jours après aujourd'hui");
         }
 
-        User enseignant = userRepository.findById(enseignantId)
+        Utilisateur enseignant = userRepository.findById(enseignantId)
                 .orElseThrow(() -> new RuntimeException("Enseignant introuvable"));
 
-        if (!enseignant.getRoles().contains(User.Role.TEACHER)) {
+        if (!enseignant.getRoles().contains(Utilisateur.Role.TEACHER)) {
             throw new RuntimeException("Cet utilisateur n'est pas enseignant");
         }
 

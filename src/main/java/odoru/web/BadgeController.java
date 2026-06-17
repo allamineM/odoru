@@ -1,8 +1,8 @@
 package odoru.web;
 
-import odoru.domain.Attendance;
-import odoru.domain.Badge;
-import odoru.domain.Course;
+import odoru.entities.Presence;
+import odoru.entities.Badge;
+import odoru.entities.Cours;
 import odoru.service.BadgeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,18 +30,18 @@ public class BadgeController {
     }
 
     @PostMapping("/scanner")
-    public ResponseEntity<Attendance> scanner(@RequestParam String numeroBadge,
-                                              @RequestParam String coursId) {
+    public ResponseEntity<Presence> scanner(@RequestParam String numeroBadge,
+                                            @RequestParam String coursId) {
         return ResponseEntity.ok(badgeService.scanner(numeroBadge, coursId));
     }
 
     @GetMapping("/membre/{membreId}/cours")
-    public ResponseEntity<List<Course>> getCourseSuivis(@PathVariable String membreId) {
+    public ResponseEntity<List<Cours>> getCourseSuivis(@PathVariable String membreId) {
         return ResponseEntity.ok(badgeService.getCourseSuivisParMembre(membreId));
     }
 
     @GetMapping("/cours/{coursId}/presences")
-    public ResponseEntity<List<Attendance>> getPresences(@PathVariable String coursId) {
+    public ResponseEntity<List<Presence>> getPresences(@PathVariable String coursId) {
         return ResponseEntity.ok(badgeService.getPresencesParCours(coursId));
     }
 }

@@ -1,6 +1,6 @@
 package odoru;
 
-import odoru.domain.User;
+import odoru.entities.Utilisateur;
 import odoru.repository.UserRepository;
 import odoru.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class UtilisateurServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -25,30 +25,30 @@ public class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    private User user;
+    private Utilisateur utilisateur;
 
     @BeforeEach
     void setUp() {
-        user = new User();
-        user.setNom("Dupont");
-        user.setPrenom("Marie");
-        user.setEmail("marie@test.com");
-        user.setNomUtilisateur("marie123");
-        user.setMotDePasse("secret");
-        user.setNiveauExpertise(3);
+        utilisateur = new Utilisateur();
+        utilisateur.setNom("Dupont");
+        utilisateur.setPrenom("Marie");
+        utilisateur.setEmail("marie@test.com");
+        utilisateur.setNomUtilisateur("marie123");
+        utilisateur.setMotDePasse("secret");
+        utilisateur.setNiveauExpertise(3);
     }
 
     @Test
     void inscription_succes() {
         when(userRepository.existsByNomUtilisateur("marie123")).thenReturn(false);
         when(userRepository.existsByEmail("marie@test.com")).thenReturn(false);
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.save(any(Utilisateur.class))).thenReturn(utilisateur);
 
-        User result = userService.inscription(user);
+        Utilisateur result = userService.inscription(utilisateur);
 
         assertNotNull(result);
-        assertTrue(result.getRoles().contains(User.Role.MEMBER));
-        verify(userRepository, times(1)).save(user);
+        assertTrue(result.getRoles().contains(Utilisateur.Role.MEMBER));
+        verify(userRepository, times(1)).save(utilisateur);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class UserServiceTest {
         when(userRepository.existsByNomUtilisateur("marie123")).thenReturn(true);
 
         RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> userService.inscription(user));
+                () -> userService.inscription(utilisateur));
 
         assertEquals("Ce nom d'utilisateur est déjà pris", ex.getMessage());
         verify(userRepository, never()).save(any());
@@ -68,7 +68,7 @@ public class UserServiceTest {
         when(userRepository.existsByEmail("marie@test.com")).thenReturn(true);
 
         RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> userService.inscription(user));
+                () -> userService.inscription(utilisateur));
 
         assertEquals("Cet email est déjà utilisé", ex.getMessage());
         verify(userRepository, never()).save(any());
@@ -76,9 +76,9 @@ public class UserServiceTest {
 
     @Test
     void getAllUsers_retourneListe() {
-        when(userRepository.findAll()).thenReturn(List.of(user));
+        when(userRepository.findAll()).thenReturn(List.of(utilisateur));
 
-        List<User> result = userService.getAllUsers();
+        List<Utilisateur> result = userService.getAllUsers();
 
         assertEquals(1, result.size());
         verify(userRepository, times(1)).findAll();
@@ -86,24 +86,24 @@ public class UserServiceTest {
 
     @Test
     void updateNiveauExpertise_succes() {
-        user = spy(user);
-        when(userRepository.findById("1")).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        utilisateur = spy(utilisateur);
+        when(userRepository.findById("1")).thenReturn(Optional.of(utilisateur));
+        when(userRepository.save(any(Utilisateur.class))).thenReturn(utilisateur);
 
-        User result = userService.updateNiveauExpertise("1", 5);
+        Utilisateur result = userService.updateNiveauExpertise("1", 5);
 
         assertEquals(5, result.getNiveauExpertise());
-        verify(userRepository, times(1)).save(user);
+        verify(userRepository, times(1)).save(utilisateur);
     }
 
     @Test
     void addRole_succes() {
-        when(userRepository.findById("1")).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.findById("1")).thenReturn(Optional.of(utilisateur));
+        when(userRepository.save(any(Utilisateur.class))).thenReturn(utilisateur);
 
-        User result = userService.addRole("1", User.Role.TEACHER);
+        Utilisateur result = userService.addRole("1", Utilisateur.Role.TEACHER);
 
-        assertTrue(result.getRoles().contains(User.Role.TEACHER));
-        verify(userRepository, times(1)).save(user);
+        assertTrue(result.getRoles().contains(Utilisateur.Role.TEACHER));
+        verify(userRepository, times(1)).save(utilisateur);
     }
 }

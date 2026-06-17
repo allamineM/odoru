@@ -1,7 +1,7 @@
 package odoru;
 
-import odoru.domain.Course;
-import odoru.domain.User;
+import odoru.entities.Cours;
+import odoru.entities.Utilisateur;
 import odoru.repository.CourseRepository;
 import odoru.repository.UserRepository;
 import odoru.service.CourseService;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CourseServiceTest {
+public class CoursServiceTest {
 
     @Mock
     private CourseRepository courseRepository;
@@ -31,17 +31,17 @@ public class CourseServiceTest {
     @InjectMocks
     private CourseService courseService;
 
-    private User enseignant;
-    private Course cours;
+    private Utilisateur enseignant;
+    private Cours cours;
 
     @BeforeEach
     void setUp() {
-        enseignant = new User();
+        enseignant = new Utilisateur();
         enseignant.setNom("Dupont");
         enseignant.setNiveauExpertise(5);
-        enseignant.getRoles().add(User.Role.TEACHER);
+        enseignant.getRoles().add(Utilisateur.Role.TEACHER);
 
-        cours = new Course();
+        cours = new Cours();
         cours.setTitre("Danse niveau 5");
         cours.setNiveauCible(5);
         cours.setDateHeure(LocalDateTime.now().plusDays(10));
@@ -52,9 +52,9 @@ public class CourseServiceTest {
     @Test
     void createCourse_succes() {
         when(userRepository.findById("1")).thenReturn(Optional.of(enseignant));
-        when(courseRepository.save(any(Course.class))).thenReturn(cours);
+        when(courseRepository.save(any(Cours.class))).thenReturn(cours);
 
-        Course result = courseService.createCourse(cours, "1");
+        Cours result = courseService.createCourse(cours, "1");
 
         assertNotNull(result);
         verify(courseRepository, times(1)).save(cours);
@@ -85,7 +85,7 @@ public class CourseServiceTest {
 
     @Test
     void createCourse_pasEnseignant() {
-        enseignant.getRoles().remove(User.Role.TEACHER);
+        enseignant.getRoles().remove(Utilisateur.Role.TEACHER);
         when(userRepository.findById("1")).thenReturn(Optional.of(enseignant));
 
         RuntimeException ex = assertThrows(RuntimeException.class,
@@ -99,7 +99,7 @@ public class CourseServiceTest {
     void getCoursesByNiveau_retourneListe() {
         when(courseRepository.findByNiveauCible(5)).thenReturn(List.of(cours));
 
-        List<Course> result = courseService.getCoursesByNiveau(5);
+        List<Cours> result = courseService.getCoursesByNiveau(5);
 
         assertEquals(1, result.size());
         verify(courseRepository, times(1)).findByNiveauCible(5);

@@ -1,6 +1,6 @@
 package odoru.service;
 
-import odoru.domain.User;
+import odoru.entities.Utilisateur;
 import odoru.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,46 +14,46 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User inscription(User user) {
-        if (userRepository.existsByNomUtilisateur(user.getNomUtilisateur())) {
+    public Utilisateur inscription(Utilisateur utilisateur) {
+        if (userRepository.existsByNomUtilisateur(utilisateur.getNomUtilisateur())) {
             throw new RuntimeException("Ce nom d'utilisateur est déjà pris");
         }
-        if (userRepository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(utilisateur.getEmail())) {
             throw new RuntimeException("Cet email est déjà utilisé");
         }
-        user.getRoles().add(User.Role.MEMBER);
-        return userRepository.save(user);
+        utilisateur.getRoles().add(Utilisateur.Role.MEMBER);
+        return userRepository.save(utilisateur);
     }
 
-    public User login(String nomUtilisateur, String motDePasse){
-        User user = userRepository.findByNomUtilisateur(nomUtilisateur)
+    public Utilisateur login(String nomUtilisateur, String motDePasse){
+        Utilisateur utilisateur = userRepository.findByNomUtilisateur(nomUtilisateur)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-        if (!user.getMotDePasse().equals(motDePasse)) {
+        if (!utilisateur.getMotDePasse().equals(motDePasse)) {
             throw new RuntimeException("Mot de passe incorrect");
         }
-        return user;
+        return utilisateur;
     }
 
-    public List<User> getAllUsers() {
+    public List<Utilisateur> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(String id) {
+    public Optional<Utilisateur> getUserById(String id) {
         return userRepository.findById(id);
     }
 
-    public User updateNiveauExpertise(String id, int niveau) {
-        User user = userRepository.findById(id)
+    public Utilisateur updateNiveauExpertise(String id, int niveau) {
+        Utilisateur utilisateur = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Membre introuvable"));
-        user.setNiveauExpertise(niveau);
-        return userRepository.save(user);
+        utilisateur.setNiveauExpertise(niveau);
+        return userRepository.save(utilisateur);
     }
 
-    public User addRole(String id, User.Role role) {
-        User user = userRepository.findById(id)
+    public Utilisateur addRole(String id, Utilisateur.Role role) {
+        Utilisateur utilisateur = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Membre introuvable"));
-        user.getRoles().add(role);
-        return userRepository.save(user);
+        utilisateur.getRoles().add(role);
+        return userRepository.save(utilisateur);
     }
 
     public void deleteUser(String id) {

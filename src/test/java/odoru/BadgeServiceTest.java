@@ -1,8 +1,8 @@
 package odoru;
 
-import odoru.domain.Attendance;
-import odoru.domain.Badge;
-import odoru.domain.Course;
+import odoru.entities.Presence;
+import odoru.entities.Badge;
+import odoru.entities.Cours;
 import odoru.repository.AttendanceRepository;
 import odoru.repository.BadgeRepository;
 import odoru.repository.CourseRepository;
@@ -35,7 +35,7 @@ public class BadgeServiceTest {
     private BadgeService badgeService;
 
     private Badge badge;
-    private Course cours;
+    private Cours cours;
 
     @BeforeEach
     void setUp() {
@@ -43,7 +43,7 @@ public class BadgeServiceTest {
         badge.setNumeroBadge("BADGE001");
         badge.setMembreId("membre1");
 
-        cours = new Course();
+        cours = new Cours();
         cours.setTitre("Danse niveau 5");
     }
 
@@ -76,9 +76,9 @@ public class BadgeServiceTest {
         when(badgeRepository.findByNumeroBadge("BADGE001")).thenReturn(Optional.of(badge));
         when(courseRepository.findById("cours1")).thenReturn(Optional.of(cours));
         when(attendanceRepository.existsByMembreIdAndCoursId("membre1", "cours1")).thenReturn(false);
-        when(attendanceRepository.save(any(Attendance.class))).thenAnswer(i -> i.getArgument(0));
+        when(attendanceRepository.save(any(Presence.class))).thenAnswer(i -> i.getArgument(0));
 
-        Attendance result = badgeService.scanner("BADGE001", "cours1");
+        Presence result = badgeService.scanner("BADGE001", "cours1");
 
         assertNotNull(result);
         assertEquals("membre1", result.getMembreId());

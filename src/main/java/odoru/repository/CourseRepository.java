@@ -1,14 +1,14 @@
 package odoru.repository;
 
-import odoru.domain.Course;
+import odoru.entities.Cours;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface CourseRepository extends MongoRepository<Course, String> {
+public interface CourseRepository extends MongoRepository<Cours, String> {
 
-    List<Course> findByNiveauCible(int niveauCible);
-    List<Course> findByEnseignantId(String enseignantId);
+    List<Cours> findByNiveauCible(int niveauCible);
+    List<Cours> findByEnseignantId(String enseignantId);
 }

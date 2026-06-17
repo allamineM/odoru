@@ -1,7 +1,7 @@
 package odoru.service;
 
-import odoru.domain.Course;
-import odoru.domain.User;
+import odoru.entities.Cours;
+import odoru.entities.Utilisateur;
 import odoru.repository.CourseRepository;
 import odoru.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,40 +19,40 @@ public class CourseService {
     @Autowired
     private UserRepository userRepository;
 
-    public Course createCourse(Course course, String enseignantId) {
-        if (course.getDateHeure().isBefore(LocalDateTime.now().plusDays(7))) {
+    public Cours createCourse(Cours cours, String enseignantId) {
+        if (cours.getDateHeure().isBefore(LocalDateTime.now().plusDays(7))) {
             throw new RuntimeException("La date du cours doit être au moins 7 jours après aujourd'hui");
         }
 
-        User enseignant = userRepository.findById(enseignantId)
+        Utilisateur enseignant = userRepository.findById(enseignantId)
                 .orElseThrow(() -> new RuntimeException("Enseignant introuvable"));
 
-        if (!enseignant.getRoles().contains(User.Role.TEACHER)) {
+        if (!enseignant.getRoles().contains(Utilisateur.Role.TEACHER)) {
             throw new RuntimeException("Cet utilisateur n'est pas enseignant");
         }
 
-        if (enseignant.getNiveauExpertise() < course.getNiveauCible()) {
-            throw new RuntimeException("L'enseignant n'est pas apte au niveau " + course.getNiveauCible());
+        if (enseignant.getNiveauExpertise() < cours.getNiveauCible()) {
+            throw new RuntimeException("L'enseignant n'est pas apte au niveau " + cours.getNiveauCible());
         }
 
-        course.setEnseignantId(enseignantId);
-        return courseRepository.save(course);
+        cours.setEnseignantId(enseignantId);
+        return courseRepository.save(cours);
     }
 
-    public List<Course> getAllCourses() {
+    public List<Cours> getAllCourses() {
         return courseRepository.findAll();
     }
 
-    public List<Course> getCoursesByNiveau(int niveau) {
+    public List<Cours> getCoursesByNiveau(int niveau) {
         return courseRepository.findByNiveauCible(niveau);
     }
 
-    public List<Course> getCoursesByEnseignant(String enseignantId) {
+    public List<Cours> getCoursesByEnseignant(String enseignantId) {
         return courseRepository.findByEnseignantId(enseignantId);
     }
 
-    public List<Course> getCoursesByMembre(String membreId) {
-        User membre = userRepository.findById(membreId)
+    public List<Cours> getCoursesByMembre(String membreId) {
+        Utilisateur membre = userRepository.findById(membreId)
                 .orElseThrow(() -> new RuntimeException("Membre introuvable"));
         return courseRepository.findByNiveauCible(membre.getNiveauExpertise());
     }

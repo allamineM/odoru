@@ -1,5 +1,6 @@
-package odoru.domain;
+package odoru.entities;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,20 +9,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Document(collection = "competitions")
+@Schema(description = "Entité représentant une compétition organisée par un enseignant")
 public class Competition {
 
     @Id
+    @Schema(description = "Identifiant unique de la compétition", example = "60b9ce...comp1")
     private String id;
 
+    @Schema(description = "Titre de la compétition", example = "Tournoi d'été")
     private String titre;
+
+    @Schema(description = "Niveau visé par la compétition (1 à 5)", example = "4")
     private int niveauCible;
+
+    @Schema(description = "Date et heure de la compétition", example = "2026-07-01T14:00:00")
     private LocalDateTime dateHeure;
+
+    @Schema(description = "Identifiant de l'enseignant organisateur", example = "60b9ce...e1")
     private String enseignantId;
+
+    @Schema(description = "Lieu de l'évènement", example = "Gymnase principal")
     private String lieu;
+
+    @Schema(description = "Durée en minutes de la compétition", example = "120")
     private int dureeMinutes;
+
+    @Schema(description = "Date de saisie dans le système")
     private LocalDateTime creeLe;
 
-    // membreId -> note sur 10 (précision 1/10)
+    @Schema(description = "Résultats des élèves (Clé : membreId, Valeur : note sur 10 au dixième près)")
     private Map<String, Double> resultats = new HashMap<>();
 
     public Competition() {

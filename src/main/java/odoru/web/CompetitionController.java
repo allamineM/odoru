@@ -1,6 +1,6 @@
 package odoru.web;
 
-import odoru.domain.Competition;
+import odoru.entities.Competition;
 import odoru.service.CompetitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

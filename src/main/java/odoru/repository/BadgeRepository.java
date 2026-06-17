@@ -1,6 +1,6 @@
 package odoru.repository;
 
-import odoru.domain.Badge;
+import odoru.entities.Badge;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

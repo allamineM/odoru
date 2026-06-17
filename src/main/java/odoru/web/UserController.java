@@ -1,6 +1,6 @@
 package odoru.web;
 
-import odoru.domain.User;
+import odoru.entities.Utilisateur;
 import odoru.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,37 +16,37 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/inscription")
-    public ResponseEntity<User> inscription(@RequestBody User user) {
-        return ResponseEntity.ok(userService.inscription(user));
+    public ResponseEntity<Utilisateur> inscription(@RequestBody Utilisateur utilisateur) {
+        return ResponseEntity.ok(userService.inscription(utilisateur));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestParam String nomUtilisateur,
-                                      @RequestParam String motDePasse) {
+    public ResponseEntity<Utilisateur> login(@RequestParam String nomUtilisateur,
+                                             @RequestParam String motDePasse) {
         return ResponseEntity.ok(userService.login(nomUtilisateur, motDePasse));
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<Utilisateur>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
+    public ResponseEntity<Utilisateur> getUserById(@PathVariable String id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}/expertise")
-    public ResponseEntity<User> updateExpertise(@PathVariable String id,
-                                                @RequestParam int niveau) {
+    public ResponseEntity<Utilisateur> updateExpertise(@PathVariable String id,
+                                                       @RequestParam int niveau) {
         return ResponseEntity.ok(userService.updateNiveauExpertise(id, niveau));
     }
 
     @PutMapping("/{id}/role")
-    public ResponseEntity<User> addRole(@PathVariable String id,
-                                        @RequestParam User.Role role) {
+    public ResponseEntity<Utilisateur> addRole(@PathVariable String id,
+                                               @RequestParam Utilisateur.Role role) {
         return ResponseEntity.ok(userService.addRole(id, role));
     }
 

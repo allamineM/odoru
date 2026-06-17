@@ -1,8 +1,8 @@
 package odoru.service;
 
-import odoru.domain.Attendance;
-import odoru.domain.Badge;
-import odoru.domain.Course;
+import odoru.entities.Presence;
+import odoru.entities.Badge;
+import odoru.entities.Cours;
 import odoru.repository.AttendanceRepository;
 import odoru.repository.BadgeRepository;
 import odoru.repository.CourseRepository;
@@ -39,7 +39,7 @@ public class BadgeService {
         badgeRepository.delete(badge);
     }
 
-    public Attendance scanner(String numeroBadge, String coursId) {
+    public Presence scanner(String numeroBadge, String coursId) {
         Badge badge = badgeRepository.findByNumeroBadge(numeroBadge)
                 .orElseThrow(() -> new RuntimeException("Badge inconnu"));
 
@@ -50,20 +50,20 @@ public class BadgeService {
             throw new RuntimeException("Présence déjà enregistrée");
         }
 
-        Attendance presence = new Attendance();
+        Presence presence = new Presence();
         presence.setMembreId(badge.getMembreId());
         presence.setCoursId(coursId);
         return attendanceRepository.save(presence);
     }
 
-    public List<Course> getCourseSuivisParMembre(String membreId) {
+    public List<Cours> getCourseSuivisParMembre(String membreId) {
         return attendanceRepository.findByMembreId(membreId).stream()
                 .map(a -> courseRepository.findById(a.getCoursId()).orElse(null))
                 .filter(c -> c != null)
                 .toList();
     }
 
-    public List<Attendance> getPresencesParCours(String coursId) {
+    public List<Presence> getPresencesParCours(String coursId) {
         return attendanceRepository.findByCoursId(coursId);
     }
 }

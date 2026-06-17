@@ -1,6 +1,6 @@
 package odoru.repository;
 
-import odoru.domain.Competition;
+import odoru.entities.Competition;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,9 +1,8 @@
 package odoru.service;
 
-import odoru.domain.Attendance;
-import odoru.domain.Competition;
-import odoru.domain.Course;
-import odoru.domain.User;
+import odoru.entities.Presence;
+import odoru.entities.Cours;
+import odoru.entities.Utilisateur;
 import odoru.repository.AttendanceRepository;
 import odoru.repository.CompetitionRepository;
 import odoru.repository.CourseRepository;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class StatistiqueService {
@@ -32,7 +30,7 @@ public class StatistiqueService {
 
     // Nombre de cours et nombre moyen d'élèves présents
     public Map<String, Object> getNombreCoursEtMoyennePresences() {
-        List<Course> cours = courseRepository.findAll();
+        List<Cours> cours = courseRepository.findAll();
         long nombreCours = cours.size();
 
         double moyenne = cours.stream()
@@ -48,7 +46,7 @@ public class StatistiqueService {
 
     // Nombre et liste des élèves présents à un cours donné
     public Map<String, Object> getElevesParCours(String coursId) {
-        List<Attendance> presences = attendanceRepository.findByCoursId(coursId);
+        List<Presence> presences = attendanceRepository.findByCoursId(coursId);
 
         List<Map<String, String>> eleves = presences.stream().map(p -> {
             Map<String, String> eleve = new LinkedHashMap<>();
@@ -71,14 +69,14 @@ public class StatistiqueService {
     public List<Map<String, Object>> getCoursMembreAvecPresences(String membreId,
                                                                    LocalDateTime debut,
                                                                    LocalDateTime fin) {
-        List<Course> cours = courseRepository.findAll().stream()
+        List<Cours> cours = courseRepository.findAll().stream()
                 .filter(c -> {
                     if (debut != null && c.getDateHeure().isBefore(debut)) return false;
                     if (fin != null && c.getDateHeure().isAfter(fin)) return false;
                     return true;
                 }).toList();
 
-        User membre = userRepository.findById(membreId)
+        Utilisateur membre = userRepository.findById(membreId)
                 .orElseThrow(() -> new RuntimeException("Membre introuvable"));
 
         return cours.stream()
