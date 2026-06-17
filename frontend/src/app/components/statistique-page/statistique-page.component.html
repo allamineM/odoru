@@ -6,7 +6,7 @@
 
   <div class="cards-grid">
     <div class="card">
-      <h3 class="card-title">Résumé des cours</h3>
+      <h3 class="card-title">Résumé global</h3>
       <div *ngIf="resumeCours" style="text-align: center;">
         <div class="stat-label">Nombre total de cours</div>
         <div class="stat-value">{{ resumeCours.nombreCours }}</div>
@@ -33,10 +33,77 @@
           Rechercher
         </button>
       </div>
-      <div *ngIf="nbCompetitions" style="text-align: center; margin-top: 20px;">
-        <div class="stat-label">Compétitions niveau {{ nbCompetitions.niveau }}</div>
-        <div class="stat-value">{{ nbCompetitions.nombreCompetitions }}</div>
+      <div *ngIf="nbCompetitions" style="text-align: center; margin-top: 15px;">
+        <span class="status-badge status-teacher" style="font-size: 16px;">
+          {{ nbCompetitions.nombreCompetitions }} compétition(s)
+        </span>
       </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Présences par cours</h3>
+      <div class="form-group">
+        <label>Sélectionner un cours</label>
+        <select [(ngModel)]="selectedCoursId">
+          <option value="">-- Choisir --</option>
+          <option *ngFor="let c of coursList" [value]="c.id">{{ c.titre }} ({{ c.dateHeure | date:'dd/MM HH:mm' }})</option>
+        </select>
+      </div>
+      <div class="btn-actions">
+        <button (click)="rechercherElevesCours()" class="btn btn-primary btn-full">Voir les présents</button>
+      </div>
+      <div *ngIf="elevesDuCours" style="margin-top: 15px;">
+        <p><strong>Total présents : {{ elevesDuCours.nombrePresents }}</strong></p>
+        <ul style="padding-left: 20px;">
+          <li *ngFor="let e of elevesDuCours.eleves">{{ e.prenom }} {{ e.nom }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="grid-column: 1 / -1;">
+      <h3 class="card-title">Historique d'un élève (Cours & Palmarès)</h3>
+      <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;">
+        <div class="form-group" style="flex: 1;">
+          <label>Élève</label>
+          <select [(ngModel)]="selectedMembreId">
+            <option value="">-- Choisir --</option>
+            <option *ngFor="let m of membres" [value]="m.id">{{ m.prenom }} {{ m.nom }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date de début (optionnel)</label>
+          <input type="date" [(ngModel)]="dateDebut">
+        </div>
+        <div class="form-group">
+          <label>Date de fin (optionnel)</label>
+          <input type="date" [(ngModel)]="dateFin">
+        </div>
+      </div>
+      <div class="btn-actions" style="margin-bottom: 20px;">
+        <button (click)="rechercherHistorique()" class="btn btn-accent" style="width: 200px;">Générer le rapport</button>
+      </div>
+
+      <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 250px;">
+          <h4 style="color: var(--text-secondary); margin-bottom: 10px;">Assiduité aux cours</h4>
+          <p *ngIf="historiqueCours.length === 0" class="empty-state" style="padding: 10px;">Aucun cours trouvé.</p>
+          <div *ngFor="let c of historiqueCours" style="padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
+            <span>{{ c.titre }} ({{ c.dateHeure | date:'dd/MM' }})</span>
+            <span [ngStyle]="{'color': c.present ? 'green' : 'red', 'font-weight': 'bold'}">
+              {{ c.present ? 'Présent' : 'Absent' }}
+            </span>
+          </div>
+        </div>
+        <div style="flex: 1; min-width: 250px;">
+          <h4 style="color: var(--text-secondary); margin-bottom: 10px;">Palmarès Compétitions</h4>
+          <p *ngIf="historiqueComps.length === 0" class="empty-state" style="padding: 10px;">Aucune compétition trouvée.</p>
+          <div *ngFor="let comp of historiqueComps" style="padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
+            <span>{{ comp.titre }} ({{ comp.dateHeure | date:'dd/MM' }})</span>
+            <span style="color: var(--accent); font-weight: bold;">{{ comp.note }}/10</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

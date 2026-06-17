@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Cours } from './cours.service';
 
 export interface Badge {
   id?: string;
@@ -8,7 +9,7 @@ export interface Badge {
   membreId: string;
 }
 
-export interface Attendance {
+export interface Presence {
   id?: string;
   membreId: string;
   coursId: string;
@@ -31,8 +32,8 @@ export class BadgeService {
     );
   }
 
-  scanner(numeroBadge: string, coursId: string): Observable<Attendance> {
-    return this.http.post<Attendance>(
+  scanner(numeroBadge: string, coursId: string): Observable<Presence> {
+    return this.http.post<Presence>(
       `${this.apiUrl}/scanner?numeroBadge=${numeroBadge}&coursId=${coursId}`,
       {}
     );
@@ -42,7 +43,11 @@ export class BadgeService {
     return this.http.delete<void>(`${this.apiUrl}/${numeroBadge}`);
   }
 
-  getPresencesParCours(coursId: string): Observable<Attendance[]> {
-    return this.http.get<Attendance[]>(`${this.apiUrl}/cours/${coursId}/presences`);
+  getPresencesParCours(coursId: string): Observable<Presence[]> {
+    return this.http.get<Presence[]>(`${this.apiUrl}/cours/${coursId}/presences`);
+  }
+
+  getCoursSuivis(membreId: string): Observable<Cours[]> {
+    return this.http.get<Cours[]>(`${this.apiUrl}/membre/${membreId}/cours`);
   }
 }

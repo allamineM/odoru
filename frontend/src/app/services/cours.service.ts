@@ -37,4 +37,8 @@ export class CoursService {
   getCoursByEnseignant(enseignantId: string): Observable<Cours[]> {
     return this.http.get<Cours[]>(`${this.apiUrl}/enseignant/${enseignantId}`);
   }
+
+  getCoursByMembre(membreId: string): Observable<Cours[]> {
+    return this.http.get<Cours[]>(`${this.apiUrl}/membre/${membreId}`);
+  }
 }

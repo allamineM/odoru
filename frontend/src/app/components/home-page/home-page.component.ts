@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { UserService } from '../../services/user.service';
+import { UtilisateurService } from '../../services/user.service';
 import { CoursService } from '../../services/cours.service';
 import { CompetitionService } from '../../services/competition.service';
 
@@ -30,13 +30,13 @@ export class HomePageComponent implements OnInit {
   ];
 
   constructor(
-    private userService: UserService,
+    private utilisateurService: UtilisateurService,
     private coursService: CoursService,
     private competitionService: CompetitionService
   ) {}
 
   ngOnInit() {
-    this.userService.getAllUsers().subscribe(users => {
+    this.utilisateurService.getAllUtilisateurs().subscribe(users => {
       this.stats.membres = users.length;
       this.stats.enseignants = users.filter(u => u.roles?.includes('TEACHER')).length;
     });

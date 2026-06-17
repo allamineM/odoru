@@ -22,4 +22,18 @@ export class StatistiqueService {
   getNombreCompetitionsParNiveau(niveau: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/competitions/niveau/${niveau}`);
   }
+
+  getCoursMembreAvecPresences(membreId: string, debut?: string, fin?: string): Observable<any[]> {
+    let url = `${this.apiUrl}/membres/${membreId}/cours?`;
+    if (debut) url += `debut=${debut}&`;
+    if (fin) url += `fin=${fin}`;
+    return this.http.get<any[]>(url);
+  }
+
+  getCompetitionsMembreAvecResultats(membreId: string, debut?: string, fin?: string): Observable<any[]> {
+    let url = `${this.apiUrl}/membres/${membreId}/competitions?`;
+    if (debut) url += `debut=${debut}&`;
+    if (fin) url += `fin=${fin}`;
+    return this.http.get<any[]>(url);
+  }
 }

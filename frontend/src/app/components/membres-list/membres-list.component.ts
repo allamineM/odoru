@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { UserService, User } from '../../services/user.service';
-import { RefreshService } from '../../services/refresh.service';
+import { UtilisateurService, Utilisateur } from '../../services/user.service';
+import { ActualisationService } from '../../services/refresh.service';
 
 @Component({
   selector: 'app-membres-list',
@@ -14,22 +14,22 @@ import { RefreshService } from '../../services/refresh.service';
 })
 export class MembresListComponent implements OnInit, OnDestroy {
 
-  membres: User[] = [];
+  membres: Utilisateur[] = [];
   search = '';
-  selectedMembre: User | null = null;
+  selectedMembre: Utilisateur | null = null;
   editLevel = 1;
   selectedRole: 'TEACHER' | 'SECRETARY' | 'PRESIDENT' = 'TEACHER';
   message = '';
   private sub?: Subscription;
 
   constructor(
-    private userService: UserService,
-    private refresh: RefreshService
+    private utilisateurService: UtilisateurService,
+    private actualisationService: ActualisationService
   ) {}
 
   ngOnInit(): void {
     this.loadMembres();
-    this.sub = this.refresh.membresChanged.subscribe(() => this.loadMembres());
+    this.sub = this.actualisationService.membresChangees.subscribe(() => this.loadMembres());
   }
 
   ngOnDestroy() {
@@ -37,23 +37,34 @@ export class MembresListComponent implements OnInit, OnDestroy {
   }
 
   loadMembres() {
-    this.userService.getAllUsers().subscribe(data => {
+    this.utilisateurService.getAllUtilisateurs().subscribe(data => {
       this.membres = data;
     });
   }
 
-  get filteredMembres(): User[] {
+  // Fonction manquante : Filtre la liste selon la recherche
+  get filteredMembres(): Utilisateur[] {
     if (!this.search.trim()) return this.membres;
-    const s = this.search.toLowerCase();
+    const term = this.search.toLowerCase();
     return this.membres.filter(m =>
-      m.nom?.toLowerCase().includes(s) ||
-      m.prenom?.toLowerCase().includes(s) ||
-      m.email?.toLowerCase().includes(s) ||
-      m.adresse?.ville?.toLowerCase().includes(s)
+      m.nom.toLowerCase().includes(term) ||
+      m.prenom.toLowerCase().includes(term) ||
+      m.email.toLowerCase().includes(term) ||
+      (m.adresse?.ville || '').toLowerCase().includes(term)
     );
   }
 
-  openManage(membre: User) {
+  roleLabel(role: string): string {
+    switch(role) {
+      case 'TEACHER': return 'Enseignant';
+      case 'SECRETARY': return 'Secrétaire';
+      case 'PRESIDENT': return 'Président';
+      case 'MEMBER': return 'Membre';
+      default: return role;
+    }
+  }
+
+  openManage(membre: Utilisateur) {
     this.selectedMembre = membre;
     this.editLevel = membre.niveauExpertise;
     this.message = '';
@@ -66,7 +77,7 @@ export class MembresListComponent implements OnInit, OnDestroy {
 
   updateLevel() {
     if (!this.selectedMembre?.id) return;
-    this.userService.updateExpertise(this.selectedMembre.id, this.editLevel).subscribe({
+    this.utilisateurService.updateExpertise(this.selectedMembre.id, this.editLevel).subscribe({
       next: () => {
         this.message = `Niveau mis à jour : ${this.editLevel}`;
         this.loadMembres();
@@ -77,9 +88,9 @@ export class MembresListComponent implements OnInit, OnDestroy {
 
   addRole() {
     if (!this.selectedMembre?.id) return;
-    this.userService.addRole(this.selectedMembre.id, this.selectedRole).subscribe({
+    this.utilisateurService.addRole(this.selectedMembre.id, this.selectedRole).subscribe({
       next: (updated) => {
-        this.message = `Rôle ${this.selectedRole} ajouté`;
+        this.message = `Rôle ${this.roleLabel(this.selectedRole)} ajouté`;
         this.selectedMembre = updated;
         this.loadMembres();
       },
@@ -87,19 +98,16 @@ export class MembresListComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteMembre(membre: User) {
+  deleteMembre(membre: Utilisateur) {
     if (!membre.id) return;
-    if (!confirm(`Supprimer ${membre.prenom} ${membre.nom} ?`)) return;
-    this.userService.deleteUser(membre.id).subscribe(() => this.loadMembres());
-  }
-
-  roleLabel(role: string): string {
-    const labels: { [k: string]: string } = {
-      MEMBER: 'Membre',
-      TEACHER: 'Enseignant',
-      SECRETARY: 'Secrétaire',
-      PRESIDENT: 'Président'
-    };
-    return labels[role] || role;
+    if (confirm(`Supprimer ${membre.prenom} ${membre.nom} ?`)) {
+      this.utilisateurService.deleteUtilisateur(membre.id).subscribe({
+        next: () => {
+          this.closeManage();
+          this.loadMembres();
+        },
+        error: (err) => alert('Erreur : ' + (err.error?.message || 'Échec'))
+      });
+    }
   }
 }

@@ -40,4 +40,8 @@ export class CompetitionService {
   getByNiveau(niveau: number): Observable<Competition[]> {
     return this.http.get<Competition[]>(`${this.apiUrl}/niveau/${niveau}`);
   }
+
+  getByMembre(membreId: string): Observable<Competition[]> {
+    return this.http.get<Competition[]>(`${this.apiUrl}/membre/${membreId}`);
+  }
 }

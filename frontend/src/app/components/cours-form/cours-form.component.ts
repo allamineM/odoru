@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CoursService, Cours } from '../../services/cours.service';
-import { UserService, User } from '../../services/user.service';
-import { RefreshService } from '../../services/refresh.service';
+import { UtilisateurService, Utilisateur } from '../../services/user.service';
+import { ActualisationService } from '../../services/refresh.service';
 
 @Component({
   selector: 'app-cours-form',
@@ -23,17 +23,17 @@ export class CoursFormComponent implements OnInit {
   };
 
   enseignantId = '';
-  enseignants: User[] = [];
+  enseignants: Utilisateur[] = [];
   message = '';
 
   constructor(
     private coursService: CoursService,
-    private userService: UserService,
-    private refresh: RefreshService
+    private utilisateurService: UtilisateurService,
+    private actualisationService: ActualisationService
   ) {}
 
   ngOnInit() {
-    this.userService.getAllUsers().subscribe(users => {
+    this.utilisateurService.getAllUtilisateurs().subscribe(users => {
       this.enseignants = users.filter(u => u.roles?.includes('TEACHER'));
     });
   }
@@ -43,7 +43,7 @@ export class CoursFormComponent implements OnInit {
       next: (response) => {
         this.message = `Cours "${response.titre}" créé avec succès !`;
         this.resetForm();
-        this.refresh.notifyCoursChanged();
+        this.actualisationService.notifierCours();
       },
       error: (err) => {
         this.message = 'Erreur : ' + (err.error?.message || 'Création impossible');

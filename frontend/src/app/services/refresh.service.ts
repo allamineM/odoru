@@ -4,18 +4,18 @@ import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class RefreshService {
-  private refreshMembres$ = new Subject<void>();
-  private refreshCours$ = new Subject<void>();
+export class ActualisationService {
+  private actualisationMembres$ = new Subject<void>();
+  private actualisationCours$ = new Subject<void>();
 
-  membresChanged = this.refreshMembres$.asObservable();
-  coursChanged = this.refreshCours$.asObservable();
+  membresChangees = this.actualisationMembres$.asObservable();
+  coursChangees = this.actualisationCours$.asObservable();
 
-  notifyMembresChanged() {
-    this.refreshMembres$.next();
+  notifierMembres() {
+    this.actualisationMembres$.next();
   }
 
-  notifyCoursChanged() {
-    this.refreshCours$.next();
+  notifierCours() {
+    this.actualisationCours$.next();
   }
 }

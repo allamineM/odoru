@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { CoursService, Cours } from '../../services/cours.service';
-import { UserService, User } from '../../services/user.service';
-import { RefreshService } from '../../services/refresh.service';
+import { UtilisateurService, Utilisateur } from '../../services/user.service';
+import { ActualisationService } from '../../services/refresh.service';
 
 @Component({
   selector: 'app-cours-list',
@@ -20,13 +20,13 @@ export class CoursListComponent implements OnInit, OnDestroy {
 
   constructor(
     private coursService: CoursService,
-    private userService: UserService,
-    private refresh: RefreshService
+    private utilisateurService: UtilisateurService,
+    private actualisationService: ActualisationService
   ) {}
 
   ngOnInit(): void {
     this.loadAll();
-    this.sub = this.refresh.coursChanged.subscribe(() => this.loadCours());
+    this.sub = this.actualisationService.coursChangees.subscribe(() => this.loadCours());
   }
 
   ngOnDestroy() {
@@ -34,20 +34,18 @@ export class CoursListComponent implements OnInit, OnDestroy {
   }
 
   loadAll() {
-    this.userService.getAllUsers().subscribe(users => {
+    this.utilisateurService.getAllUtilisateurs().subscribe(users => {
       users.forEach(u => {
         if (u.id) {
           this.enseignantsMap[u.id] = `${u.prenom} ${u.nom}`;
         }
       });
-      this.loadCours();
     });
+    this.loadCours();
   }
 
   loadCours() {
-    this.coursService.getAllCours().subscribe(data => {
-      this.cours = data;
-    });
+    this.coursService.getAllCours().subscribe(c => this.cours = c);
   }
 
   getNomEnseignant(id?: string): string {

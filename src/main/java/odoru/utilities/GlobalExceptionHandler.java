@@ -1,3 +1,4 @@
+/*
 package odoru.utilities;
 
 import org.springframework.http.HttpStatus;
@@ -54,3 +55,4 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, status);
     }
 }
+*/

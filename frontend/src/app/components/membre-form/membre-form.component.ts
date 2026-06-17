@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { UserService, User } from '../../services/user.service';
-import { RefreshService } from '../../services/refresh.service';
+import { UtilisateurService, Utilisateur } from '../../services/user.service';
+import { ActualisationService } from '../../services/refresh.service';
 
 @Component({
   selector: 'app-membre-form',
@@ -13,7 +13,7 @@ import { RefreshService } from '../../services/refresh.service';
 })
 export class MembreFormComponent {
 
-  membre: User = {
+  membre: Utilisateur = {
     nom: '',
     prenom: '',
     email: '',
@@ -27,17 +27,17 @@ export class MembreFormComponent {
   loading = false;
 
   constructor(
-    private userService: UserService,
-    private refresh: RefreshService
+    private utilisateurService: UtilisateurService,
+    private actualisationService: ActualisationService
   ) {}
 
   onSubmit() {
     this.loading = true;
-    this.userService.inscription(this.membre).subscribe({
+    this.utilisateurService.inscription(this.membre).subscribe({
       next: (response) => {
         this.message = `Membre ${response.prenom} ${response.nom} créé avec succès !`;
         this.resetForm();
-        this.refresh.notifyMembresChanged();
+        this.actualisationService.notifierMembres();
         this.loading = false;
       },
       error: (err) => {

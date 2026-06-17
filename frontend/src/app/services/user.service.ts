@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface Address {
+export interface Adresse {
   ville: string;
   pays: string;
 }
 
-export interface User {
+export interface Utilisateur {
   id?: string;
   nom: string;
   prenom: string;
@@ -15,40 +15,47 @@ export interface User {
   nomUtilisateur: string;
   motDePasse: string;
   niveauExpertise: number;
-  adresse: Address;
+  adresse: Adresse;
   roles?: string[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class UtilisateurService {
 
-  private apiUrl = 'http://localhost:8080/api/users';
+  private apiUrl = 'http://localhost:8080/api/utilisateurs';
 
   constructor(private http: HttpClient) {}
 
-  inscription(user: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/inscription`, user);
+  inscription(utilisateur: Utilisateur): Observable<Utilisateur> {
+    return this.http.post<Utilisateur>(`${this.apiUrl}/inscription`, utilisateur);
   }
 
-  getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl);
+  login(nomUtilisateur: string, motDePasse: string): Observable<Utilisateur> {
+    return this.http.post<Utilisateur>(
+      `${this.apiUrl}/login?nomUtilisateur=${nomUtilisateur}&motDePasse=${motDePasse}`,
+      {}
+    );
   }
 
-  getUserById(id: string): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/${id}`);
+  getAllUtilisateurs(): Observable<Utilisateur[]> {
+    return this.http.get<Utilisateur[]>(this.apiUrl);
   }
 
-  updateExpertise(id: string, niveau: number): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/${id}/expertise?niveau=${niveau}`, {});
+  getUtilisateurById(id: string): Observable<Utilisateur> {
+    return this.http.get<Utilisateur>(`${this.apiUrl}/${id}`);
   }
 
-  deleteUser(id: string): Observable<void> {
+  updateExpertise(id: string, niveau: number): Observable<Utilisateur> {
+    return this.http.put<Utilisateur>(`${this.apiUrl}/${id}/expertise?niveau=${niveau}`, {});
+  }
+
+  addRole(id: string, role: string): Observable<Utilisateur> {
+    return this.http.put<Utilisateur>(`${this.apiUrl}/${id}/role?role=${role}`, {});
+  }
+
+  deleteUtilisateur(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
-
-  addRole(id: string, role: string): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/${id}/role?role=${role}`, {});
   }
 }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { BadgeService } from '../../services/badge.service';
-import { UserService, User } from '../../services/user.service';
+import { UtilisateurService, Utilisateur } from '../../services/user.service';
 import { CoursService, Cours } from '../../services/cours.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { CoursService, Cours } from '../../services/cours.service';
 })
 export class BadgePageComponent implements OnInit {
 
-  membres: User[] = [];
+  membres: Utilisateur[] = [];
   cours: Cours[] = [];
 
   // Assigner badge
@@ -30,12 +30,12 @@ export class BadgePageComponent implements OnInit {
 
   constructor(
     private badgeService: BadgeService,
-    private userService: UserService,
+    private utilisateurService: UtilisateurService,
     private coursService: CoursService
   ) {}
 
   ngOnInit() {
-    this.userService.getAllUsers().subscribe(users => this.membres = users);
+    this.utilisateurService.getAllUtilisateurs().subscribe(users => this.membres = users);
     this.coursService.getAllCours().subscribe(c => this.cours = c);
   }
 
@@ -55,8 +55,9 @@ export class BadgePageComponent implements OnInit {
   scanner() {
     this.badgeService.scanner(this.numeroBadgeScan, this.coursIdScan).subscribe({
       next: () => {
-        this.messageScan = 'Présence enregistrée !';
+        this.messageScan = `Présence enregistrée pour le badge ${this.numeroBadgeScan} !`;
         this.numeroBadgeScan = '';
+        this.coursIdScan = '';
       },
       error: (err) => {
         this.messageScan = 'Erreur : ' + (err.error?.message || 'Impossible');

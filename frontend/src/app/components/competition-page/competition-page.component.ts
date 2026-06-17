@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CompetitionService, Competition } from '../../services/competition.service';
-import { UserService, User } from '../../services/user.service';
+import { UtilisateurService, Utilisateur } from '../../services/user.service';
 
 @Component({
   selector: 'app-competition-page',
@@ -15,8 +15,8 @@ import { UserService, User } from '../../services/user.service';
 export class CompetitionPageComponent implements OnInit {
 
   competitions: Competition[] = [];
-  enseignants: User[] = [];
-  membres: User[] = [];
+  enseignants: Utilisateur[] = [];
+  membres: Utilisateur[] = [];
   enseignantsMap: { [id: string]: string } = {};
 
   newComp: Competition = {
@@ -37,21 +37,23 @@ export class CompetitionPageComponent implements OnInit {
 
   constructor(
     private competitionService: CompetitionService,
-    private userService: UserService
+    private utilisateurService: UtilisateurService
   ) {}
 
   ngOnInit() {
     this.loadAll();
-    this.userService.getAllUsers().subscribe(users => {
-      this.membres = users;
-      this.enseignants = users.filter(u => u.roles?.includes('TEACHER'));
-      users.forEach(u => {
-        if (u.id) this.enseignantsMap[u.id] = `${u.prenom} ${u.nom}`;
-      });
-    });
   }
 
   loadAll() {
+    this.utilisateurService.getAllUtilisateurs().subscribe(users => {
+      this.enseignants = users.filter(u => u.roles?.includes('TEACHER'));
+      this.membres = users.filter(u => u.roles?.includes('MEMBER'));
+      users.forEach(u => {
+        if (u.id) {
+          this.enseignantsMap[u.id] = `${u.prenom} ${u.nom}`;
+        }
+      });
+    });
     this.competitionService.getAllCompetitions().subscribe(data => {
       this.competitions = data;
     });
@@ -88,12 +90,8 @@ export class CompetitionPageComponent implements OnInit {
     });
   }
 
-  getNoteForMembre(comp: Competition, membreId: string): number | undefined {
-    return comp.resultats?.[membreId];
-  }
-
-  getResultatsArray(comp: Competition): { membreId: string, note: number }[] {
+  getResultatsArray(comp: Competition) {
     if (!comp.resultats) return [];
-    return Object.entries(comp.resultats).map(([membreId, note]) => ({ membreId, note: note as number }));
+    return Object.keys(comp.resultats).map(k => ({ membreId: k, note: comp.resultats![k] }));
   }
 }
