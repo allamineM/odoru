@@ -10,7 +10,7 @@ import { CoursListComponent } from '../cours-list/cours-list.component';
   template: `
     <div class="page-container">
       <div class="page-header">
-        <h2 class="page-title"><span class="page-title-icon">📚</span>Gestion des cours</h2>
+        <h2 class="page-title">Gestion des cours</h2>
         <a routerLink="/" class="back-btn">← Accueil</a>
       </div>
       <div class="cards-grid">

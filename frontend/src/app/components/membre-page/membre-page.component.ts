@@ -10,7 +10,7 @@ import { MembresListComponent } from '../membres-list/membres-list.component';
   template: `
     <div class="page-container">
       <div class="page-header">
-        <h2 class="page-title"><span class="page-title-icon">👥</span>Gestion des membres</h2>
+        <h2 class="page-title">Gestion des membres</h2>
         <a routerLink="/" class="back-btn">← Accueil</a>
       </div>
       <div class="cards-grid">
