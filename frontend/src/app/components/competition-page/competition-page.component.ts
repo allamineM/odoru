@@ -34,6 +34,7 @@ export class CompetitionPageComponent implements OnInit {
   membreIdResultat = '';
   noteResultat = 0;
   messageResultat = '';
+  filtreEnseignantId = '';
 
   constructor(
     private competitionService: CompetitionService,
@@ -53,9 +54,7 @@ export class CompetitionPageComponent implements OnInit {
           this.enseignantsMap[u.id] = `${u.prenom} ${u.nom}`;
         }
       });
-    });
-    this.competitionService.getAllCompetitions().subscribe(data => {
-      this.competitions = data;
+      this.filtrerCompetitions();
     });
   }
 
@@ -93,5 +92,17 @@ export class CompetitionPageComponent implements OnInit {
   getResultatsArray(comp: Competition) {
     if (!comp.resultats) return [];
     return Object.keys(comp.resultats).map(k => ({ membreId: k, note: comp.resultats![k] }));
+  }
+
+  filtrerCompetitions() {
+    if (this.filtreEnseignantId) {
+      this.competitionService.getByEnseignant(this.filtreEnseignantId).subscribe(data => {
+        this.competitions = data;
+      });
+    } else {
+      this.competitionService.getAllCompetitions().subscribe(data => {
+        this.competitions = data;
+      });
+    }
   }
 }

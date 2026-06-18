@@ -3,9 +3,11 @@ package odoru.service;
 import odoru.entities.Presence;
 import odoru.entities.Badge;
 import odoru.entities.Cours;
+import odoru.entities.Utilisateur;
 import odoru.repository.PresenceRepository;
 import odoru.repository.BadgeRepository;
 import odoru.repository.CoursRepository;
+import odoru.repository.UtilisateurRepository;
 import odoru.utilities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class BadgeService {
 
     @Autowired
     private CoursRepository coursRepository;
+
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
 
     public Badge assignerBadge(String numeroBadge, String membreId) {
         if (badgeRepository.existsByNumeroBadge(numeroBadge)) {
@@ -44,8 +49,18 @@ public class BadgeService {
         Badge badge = badgeRepository.findByNumeroBadge(numeroBadge)
                 .orElseThrow(() -> new BadgeIntrouvableException("Badge inconnu"));
 
+        Cours cours = coursRepository.findById(coursId)
+                .orElseThrow(() -> new CoursIntrouvableException("Cours introuvable"));
+
         coursRepository.findById(coursId)
                 .orElseThrow(() -> new CoursIntrouvableException("Cours introuvable"));
+
+        Utilisateur membre = utilisateurRepository.findById(badge.getMembreId())
+                .orElseThrow(() -> new UtilisateurIntrouvableException("Membre introuvable"));
+
+        if (membre.getNiveauExpertise() < cours.getNiveauCible()) {
+            throw new AptitudeInsuffisanteException("Niveau insuffisant. Requis : " + cours.getNiveauCible() + ", Actuel : " + membre.getNiveauExpertise());
+        }
 
         if (presenceRepository.existsByMembreIdAndCoursId(badge.getMembreId(), coursId)) {
             throw new PresenceDejaEnregistreeException("Présence déjà enregistrée");

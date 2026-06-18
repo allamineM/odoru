@@ -45,10 +45,17 @@ public class CompetitionService {
             throw new NoteInvalideException("La note doit être entre 0 et 10");
         }
 
-        double noteArrondie = Math.round(note * 10.0) / 10.0;
-
         Competition competition = competitionRepository.findById(competitionId)
                 .orElseThrow(() -> new CompetitionIntrouvableException("Compétition introuvable"));
+
+        Utilisateur membre = utilisateurRepository.findById(membreId)
+                .orElseThrow(() -> new UtilisateurIntrouvableException("Membre introuvable"));
+
+        if (membre.getNiveauExpertise() < competition.getNiveauCible()) {
+            throw new AptitudeInsuffisanteException("Le niveau de l'élève (" + membre.getNiveauExpertise() + ") est insuffisant pour cette compétition (Niveau " + competition.getNiveauCible() + ")");
+        }
+
+        double noteArrondie = Math.round(note * 10.0) / 10.0;
 
         competition.getResultats().put(membreId, noteArrondie);
         return competitionRepository.save(competition);
@@ -66,5 +73,9 @@ public class CompetitionService {
         return competitionRepository.findAll().stream()
                 .filter(c -> c.getResultats().containsKey(membreId))
                 .toList();
+    }
+
+    public List<Competition> getCompetitionsByEnseignant(String enseignantId) {
+        return competitionRepository.findByEnseignantId(enseignantId);
     }
 }

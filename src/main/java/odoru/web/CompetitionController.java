@@ -50,4 +50,10 @@ public class CompetitionController {
     public ResponseEntity<List<Competition>> getByMembre(@PathVariable String membreId) {
         return ResponseEntity.ok(competitionService.getCompetitionsByMembre(membreId));
     }
+
+    @Operation(summary = "Compétitions d'un enseignant", description = "Récupère les compétitions organisées par un enseignant spécifique.")
+    @GetMapping("/enseignant/{enseignantId}")
+    public ResponseEntity<List<Competition>> getByEnseignant(@PathVariable String enseignantId) {
+        return ResponseEntity.ok(competitionService.getCompetitionsByEnseignant(enseignantId));
+    }
 }

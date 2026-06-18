@@ -44,4 +44,8 @@ export class CompetitionService {
   getByMembre(membreId: string): Observable<Competition[]> {
     return this.http.get<Competition[]>(`${this.apiUrl}/membre/${membreId}`);
   }
+
+  getByEnseignant(enseignantId: string): Observable<Competition[]> {
+    return this.http.get<Competition[]>(`${this.apiUrl}/enseignant/${enseignantId}`);
+  }
 }

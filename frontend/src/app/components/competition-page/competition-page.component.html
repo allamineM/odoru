@@ -60,14 +60,14 @@
         <label>Compétition</label>
         <select [(ngModel)]="competitionIdResultat">
           <option value="">-- Choisir --</option>
-          <option *ngFor="let c of competitions" [value]="c.id">{{ c.titre }}</option>
+          <option *ngFor="let c of competitions" [value]="c.id">{{ c.titre }} (Niveau {{ c.niveauCible }})</option>
         </select>
       </div>
       <div class="form-group">
         <label>Membre</label>
         <select [(ngModel)]="membreIdResultat">
           <option value="">-- Choisir --</option>
-          <option *ngFor="let m of membres" [value]="m.id">{{ m.prenom }} {{ m.nom }}</option>
+          <option *ngFor="let m of membres" [value]="m.id">{{ m.prenom }} {{ m.nom }} (Niveau {{ m.niveauExpertise }})</option>
         </select>
       </div>
       <div class="form-group">
@@ -86,36 +86,46 @@
   </div>
 
   <div class="card">
-    <h3 class="card-title">Liste des compétitions</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+      <h3 class="card-title" style="margin: 0;">Liste des compétitions</h3>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <label style="margin: 0; font-weight: bold; color: var(--text-secondary);">Filtrer par professeur :</label>
+        <select [(ngModel)]="filtreEnseignantId" (change)="filtrerCompetitions()" style="padding: 6px; border-radius: 6px; border: 1px solid #ccc;">
+          <option value="">-- Toutes les compétitions --</option>
+          <option *ngFor="let e of enseignants" [value]="e.id">Mes compétitions ({{ e.prenom }} {{ e.nom }})</option>
+        </select>
+      </div>
+    </div>
+
     <div class="table-container" *ngIf="competitions.length > 0">
       <table>
         <thead>
-          <tr>
-            <th>Titre</th>
-            <th>Niveau</th>
-            <th>Date</th>
-            <th>Lieu</th>
-            <th>Enseignant</th>
-            <th>Résultats</th>
-          </tr>
+        <tr>
+          <th>Titre</th>
+          <th>Niveau</th>
+          <th>Date</th>
+          <th>Lieu</th>
+          <th>Enseignant</th>
+          <th>Résultats</th>
+        </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let c of competitions">
-            <td><strong>{{ c.titre }}</strong></td>
-            <td><span class="status-badge status-member">Niveau {{ c.niveauCible }}</span></td>
-            <td>{{ c.dateHeure | date:'dd/MM/yyyy HH:mm' }}</td>
-            <td>{{ c.lieu }}</td>
-            <td>{{ getNomEnseignant(c.enseignantId) }}</td>
-            <td>
-              <div *ngFor="let r of getResultatsArray(c)" style="margin-bottom:4px;">
-                {{ enseignantsMap[r.membreId] || r.membreId }} :
-                <strong style="color: var(--accent);">{{ r.note }}/10</strong>
-              </div>
-            </td>
-          </tr>
+        <tr *ngFor="let c of competitions">
+          <td><strong>{{ c.titre }}</strong></td>
+          <td><span class="status-badge status-member">Niveau {{ c.niveauCible }}</span></td>
+          <td>{{ c.dateHeure | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ c.lieu }}</td>
+          <td>{{ getNomEnseignant(c.enseignantId) }}</td>
+          <td>
+            <div *ngFor="let r of getResultatsArray(c)" style="margin-bottom:4px;">
+              {{ enseignantsMap[r.membreId] || r.membreId }} :
+              <strong style="color: var(--accent);">{{ r.note }}/10</strong>
+            </div>
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
-    <p *ngIf="competitions.length === 0" class="empty-state">Aucune compétition planifiée.</p>
+    <p *ngIf="competitions.length === 0" class="empty-state">Aucune compétition pour cette sélection.</p>
   </div>
 </div>
