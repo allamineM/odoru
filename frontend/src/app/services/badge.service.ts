@@ -21,7 +21,7 @@ export interface Presence {
 })
 export class BadgeService {
 
-  private apiUrl = 'http://localhost:8080/api/badges';
+  private apiUrl = 'https://odoru.onrender.com/api/badges';
 
   constructor(private http: HttpClient) {}
 

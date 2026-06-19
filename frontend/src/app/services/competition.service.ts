@@ -18,7 +18,7 @@ export interface Competition {
 })
 export class CompetitionService {
 
-  private apiUrl = 'http://localhost:8080/api/competitions';
+  private apiUrl = 'https://odoru.onrender.com/api/competitions';
 
   constructor(private http: HttpClient) {}
 

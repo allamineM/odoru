@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class StatistiqueService {
 
-  private apiUrl = 'http://localhost:8080/api/statistiques';
+  private apiUrl = 'https://odoru.onrender.com/api/statistiques';
 
   constructor(private http: HttpClient) {}
 

@@ -18,7 +18,7 @@ export interface Cours {
 })
 export class CoursService {
 
-  private apiUrl = 'http://localhost:8080/api/cours';
+  private apiUrl = 'https://odoru.onrender.com/api/cours';
 
   constructor(private http: HttpClient) {}
 
